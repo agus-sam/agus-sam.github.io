@@ -1,0 +1,89 @@
+name: Generate folders.json
+
+on:
+  push:
+    branches: [main]          # runs on every push to main
+  workflow_dispatch:           # allow manual trigger from Actions tab
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # needed to commit folders.json back
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Scan folders and build folders.json
+        run: |
+          python3 - <<'EOF'
+          import os, json, re
+
+          ROOT = "."
+          SKIP = {".git", ".github", "node_modules", "assets", "css", "js", "img", "images"}
+
+          folders = []
+
+          for entry in sorted(os.scandir(ROOT), key=lambda e: e.name):
+              # Only top-level directories that look like case studies
+              if not entry.is_dir():
+                  continue
+              if entry.name.startswith(".") or entry.name in SKIP:
+                  continue
+
+              folder = {"name": entry.name, "title": None, "desc": None, "tags": []}
+
+              readme_path = os.path.join(ROOT, entry.name, "README.md")
+              if os.path.isfile(readme_path):
+                  with open(readme_path, encoding="utf-8", errors="ignore") as f:
+                      lines = f.read().splitlines()
+
+                  # Title: first non-empty line, strip leading #
+                  for line in lines:
+                      stripped = line.strip()
+                      if stripped:
+                          folder["title"] = re.sub(r"^#+\s*", "", stripped)
+                          break
+
+                  # Desc: first non-empty, non-heading line after the title
+                  past_title = False
+                  for line in lines:
+                      stripped = line.strip()
+                      if not past_title:
+                          if stripped:
+                              past_title = True
+                          continue
+                      if stripped and not stripped.startswith("#"):
+                          folder["desc"] = stripped[:160] + ("…" if len(stripped) > 160 else "")
+                          break
+
+                  # Tags: look for a line like "tags: foo, bar, baz" or "Tags: ..."
+                  for line in lines:
+                      m = re.match(r"^tags?:\s*(.+)", line, re.IGNORECASE)
+                      if m:
+                          folder["tags"] = [t.strip() for t in m.group(1).split(",") if t.strip()]
+                          break
+
+              # Fallback title from folder name
+              if not folder["title"]:
+                  folder["title"] = entry.name.replace("-", " ").replace("_", " ").title()
+
+              folders.append(folder)
+
+          with open("folders.json", "w", encoding="utf-8") as f:
+              json.dump(folders, f, indent=2, ensure_ascii=False)
+
+          print(f"✅  Wrote {len(folders)} folder(s) to folders.json")
+          for fld in folders:
+              print(f"   • {fld['name']} → {fld['title']}")
+          EOF
+
+      - name: Commit and push folders.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add folders.json
+          # Only commit if something actually changed
+          git diff --cached --quiet && echo "No changes to folders.json" || \
+            git commit -m "chore: auto-update folders.json [skip ci]" && git push
