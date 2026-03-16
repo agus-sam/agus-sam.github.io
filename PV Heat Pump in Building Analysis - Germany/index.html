@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PV – Heat Pump KPI Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;600;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--bg:#040609;
+--surface:#0c1018;
+--border:#1e2a3a;
+--text:#eaf0f8;
+--muted:#7a8a9e;
+--accent:#c8f04e;
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+font-family:'DM Sans',sans-serif;
+}
+
+/* HEADER */
+
+header{
+padding:64px 56px 48px;
+border-bottom:1px solid var(--border);
+}
+
+.header-tag{
+font-family:'DM Mono',monospace;
+font-size:11px;
+letter-spacing:.18em;
+color:var(--accent);
+text-transform:uppercase;
+margin-bottom:14px;
+}
+
+h1{
+font-family:'Fraunces',serif;
+font-weight:900;
+font-size:48px;
+}
+
+.header-sub{
+margin-top:16px;
+color:var(--muted);
+font-size:14px;
+max-width:600px;
+line-height:1.7;
+}
+
+/* MAIN */
+
+main{
+padding:40px 56px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(480px,1fr));
+gap:28px;
+}
+
+/* PANEL */
+
+.panel{
+background:var(--surface);
+border:1px solid var(--border);
+border-radius:10px;
+overflow:hidden;
+}
+
+.panel img{
+width:100%;
+display:block;
+}
+
+.panel-title{
+padding:14px 18px;
+font-family:'DM Mono',monospace;
+font-size:11px;
+letter-spacing:.08em;
+color:var(--muted);
+text-transform:uppercase;
+}
+
+/* FOOTER */
+
+footer{
+border-top:1px solid var(--border);
+padding:28px 56px;
+display:flex;
+justify-content:space-between;
+font-family:'DM Mono',monospace;
+font-size:10px;
+color:var(--muted);
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+header{padding:44px 24px}
+main{padding:24px}
+footer{padding:24px}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="header-tag">ENERGY SYSTEM MODELLING</div>
+
+<h1>PV – Heat Pump KPI Dashboard</h1>
+
+<p class="header-sub">
+Key performance indicators from PV and Heat Pump simulations in buildings.
+</p>
+
+</header>
+
+<main>
+
+<div id="gallery" class="grid"></div>
+
+</main>
+
+<footer>
+
+<div>Agus Samsudin</div>
+<div>Energy Systems Modelling</div>
+
+</footer>
+
+<script>
+
+async function loadImages(){
+
+const USER="agus-sam"
+const REPO="agus-sam.github.io"
+
+const folder = decodeURIComponent(
+window.location.pathname.replace(/^\/|\/$/g,'')
+)
+
+const api = `https://api.github.com/repos/${USER}/${REPO}/contents/${folder}`
+
+const res = await fetch(api)
+const files = await res.json()
+
+const gallery=document.getElementById("gallery")
+
+if(!files || files.message){
+gallery.innerHTML="No images found"
+return
+}
+
+files
+.filter(file=>/\.(png|jpg|jpeg|webp)$/i.test(file.name))
+.sort((a,b)=>a.name.localeCompare(b.name))
+.forEach(img=>{
+
+const panel=document.createElement("div")
+panel.className="panel"
+
+panel.innerHTML=`
+<img src="${img.download_url}">
+<div class="panel-title">${img.name.replace(/_/g," ")}</div>
+`
+
+gallery.appendChild(panel)
+
+})
+
+}
+
+loadImages()
+
+</script>
+
+</body>
+</html>
