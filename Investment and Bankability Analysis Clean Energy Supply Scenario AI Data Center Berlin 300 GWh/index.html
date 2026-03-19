@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta property="og:title" content="Economics and Investment Analysis AI Data Centre Renewable Supply — Berlin Case Study" />
-<meta property="og:description" content="System design and bankability analysis of a 300 GWh AI data center powered by wind-dominant renewables in Germany." />
-<meta property="og:image" content="https://agus-sam.github.io/your-image.png" />
-<meta property="og:url" content="https://agus-sam.github.io/your-page" />
-<meta property="og:type" content="website" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">Economic Valuation and Investment Dashboard</title>
+<title id="page-title">Economic Valuation — Investment Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -264,7 +259,7 @@
   #geo-map{width:100%;height:100%}
 
   /* ── ECONOMY-SPECIFIC: PROJECT DESCRIPTION ── */
-  #project-description{margin-top:10px;font-size:13px;color:var(--accent);letter-spacing:.01em;font-style:italic}
+  #project-description{margin-top:10px;font-size:13px;color:var(--text);letter-spacing:.01em;font-style:normal}
 
   /* ── ECONOMY-SPECIFIC: PPA RECOMMENDATION BOX ── */
   #ppa-recommendation{margin-top:16px;padding:14px 16px;background:rgba(184,232,54,.04);border:1px solid rgba(184,232,54,.15);border-radius:4px;font-size:11.5px;color:var(--muted);line-height:1.7}
@@ -313,10 +308,17 @@
   <div class="header-map-wrap hidden" id="header-map-wrap"><div id="geo-map"></div></div>
   <div class="header-tag" id="header-tag">Economic Valuation · Investment &amp; Asset Management</div>
   <h1><span id="project-name">—</span><br><em id="project-dashboard-label">Economic</em> <span id="project-type-label">Dashboard</span></h1>
-  <p class="header-sub" id="project-description" style="margin-top:10px;font-size:13px;color:var(--accent);opacity:0;animation:fadeUp .7s .28s forwards;letter-spacing:.01em;font-style:italic;display:none"></p>
+  <p class="header-sub" id="project-description" style="margin-top:10px;font-size:13px;color:var(--text);opacity:0;animation:fadeUp .7s .28s forwards;letter-spacing:.01em;font-style:normal;display:none"></p>
   <p class="header-sub" id="header-sub">Investment-grade project finance analysis across the full technology portfolio — NPV, IRR, DSCR, LLCR, PLCR, LCOE, PPA strategy, sensitivity, and Monte Carlo risk assessment.</p>
   <div class="header-meta">
     <div class="meta-pill meta-pill--finance">WACC <span id="pill-wacc">—</span></div>
+    <div class="ctrl-wrap" id="scenario-switch">
+      <label for="scenario-select">Scenario</label>
+      <select id="scenario-select">
+        <option value="portfolio_ppa.json">Portfolio PPA</option>
+        <option value="technology_ppa.json">Technology-Specific PPA</option>
+      </select>
+    </div>
     <div class="meta-pill meta-pill--finance">Inflation <span id="pill-inflation">—</span></div>
     <div class="meta-pill meta-pill--finance">Debt Ratio <span id="pill-debt">—</span></div>
     <div class="meta-pill meta-pill--finance">Tax Rate <span id="pill-tax">—</span></div>
@@ -766,9 +768,33 @@ function loadJSON(file){
 
 function hideLoading(){const l=$('loading');if(l){l.classList.add('hidden');setTimeout(()=>l?.remove(),600);}}
 
-// ── Auto-fetch economic_valuation.json (no manual upload) ──────────────────
-loadJSON('economic_valuation.json');
+// ── Scenario selector state ─────────────────────────────────────────────────
+let currentDataFile = 'portfolio_ppa.json';
+
+// ── Unified data loader (replaces direct loadJSON call) ────────────────────
+async function loadDashboardData(file) {
+  const loadingText = $('loading-text');
+  const loadingEl   = $('loading');
+
+  // Re-show loading overlay on subsequent loads (not first load)
+  if(!_firstLoad && loadingEl){
+    loadingEl.classList.remove('hidden');
+    loadingEl.style.display='flex';
+  }
+  if(loadingText) loadingText.innerText = `Fetching ${file}…`;
+
+  loadJSON(file);
+}
+
+// ── Auto-fetch default scenario on page load ───────────────────────────────
+loadDashboardData(currentDataFile);
 function toast(msg,err=false){const t=$('status-toast');t.textContent=msg;t.style.borderColor=err?'#f85149':'var(--accent)';t.style.color=err?'#f85149':'var(--accent)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+
+// ── Scenario dropdown event ─────────────────────────────────────────────────
+document.getElementById('scenario-select').addEventListener('change', (e) => {
+  currentDataFile = e.target.value;
+  loadDashboardData(currentDataFile);
+});
 
 // ═══ INIT ═══
 function initDashboard(d){
