@@ -215,21 +215,51 @@
   #status-toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--accent);color:var(--accent);font-family:'DM Mono',monospace;font-size:11px;padding:10px 18px;border-radius:6px;z-index:900;opacity:0;transition:opacity .3s;pointer-events:none;letter-spacing:.05em;backdrop-filter:blur(12px)}
   #status-toast.show{opacity:1}
 
-  /* ── ECONOMY-SPECIFIC: BANKABILITY HEADER BAR ── */
-  .bank-header{display:flex;align-items:center;gap:12px;padding:10px 30px 8px;background:linear-gradient(90deg,rgba(75,156,245,.06) 0%,transparent 60%);border-bottom:1px solid rgba(75,156,245,.1);border-top:1px solid rgba(75,156,245,.06)}
-  .bank-header-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#4b9cf5;opacity:.9;white-space:nowrap}
-  .bank-header-rule{flex:1;height:1px;background:linear-gradient(90deg,rgba(75,156,245,.25),transparent)}
-  .bank-header-desc{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.06em;white-space:nowrap}
+  /* ── BANKABILITY HEADER BAR ── */
+  .bank-header{display:flex;align-items:center;gap:12px;padding:10px 30px 8px;background:#0c1018;border-bottom:1px solid #1e2a3a;border-top:1px solid #1e2a3a}
+  .bank-header-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#7a8a9e;white-space:nowrap}
+  .bank-header-rule{flex:1;height:1px;background:linear-gradient(90deg,#1e2a3a,transparent)}
+  .bank-header-desc{font-family:'DM Mono',monospace;font-size:9px;color:#7a8a9e;letter-spacing:.06em;white-space:nowrap}
 
-  /* ── ECONOMY-SPECIFIC: BANKABILITY KPI STRIP — blue accent, scoped ── */
-  #kpi-strip-bank{background:linear-gradient(135deg,rgba(75,156,245,.03) 0%,rgba(4,6,9,.0) 100%)}
-  .bank-kpi .kpi-label{color:#4b9cf5 !important}
-  .bank-kpi .kpi-value{color:var(--text)}
-  /* Bankability positive values/subtexts: blue instead of green */
-  #kpi-strip-bank .kpi-value.pos{color:#4b9cf5}
-  #kpi-strip-bank .kpi-delta.pos{color:#4b9cf5}
-  #kpi-strip-bank .kpi::after{background:linear-gradient(90deg,#4b9cf5 0%,transparent 80%)}
-  #kpi-strip-bank .kpi:hover::before{background:linear-gradient(135deg,rgba(75,156,245,.08) 0%,transparent 55%);opacity:1}
+  /* ── KPI SCHEME A — ★ Portfolio Metrics (above summary): muted label · white value · GREEN delta ── */
+  #kpi-strip-main .kpi-label{color:#7a8a9e !important}
+  #kpi-strip-main .kpi-value,
+  #kpi-strip-main .kpi-value.pos,
+  #kpi-strip-main .kpi-value.neutral{color:#eaf0f8 !important}
+  #kpi-strip-main .kpi-value.neg{color:#f85149 !important}
+  #kpi-strip-main .kpi-delta,
+  #kpi-strip-main .kpi-delta.neutral,
+  #kpi-strip-main .kpi-delta.pos{color:#c8f04e !important}
+  #kpi-strip-main .kpi-delta.warn{color:#f5c400 !important}
+  #kpi-strip-main .kpi-delta.neg{color:#f85149 !important}
+  #kpi-strip-main .kpi::after{opacity:0 !important}
+  #kpi-strip-main .kpi:hover::after{opacity:.35 !important}
+
+  /* ── KPI SCHEME B — Bankability (below summary): GREEN label · white value · MUTED delta · GREEN top line ── */
+  #kpi-strip-bank,
+  #kpi-strip-bank .kpi.bank-kpi{background:#0c1018}
+  #kpi-strip-bank .kpi-label,
+  #kpi-strip-bank .kpi.bank-kpi .kpi-label,
+  .bank-kpi .kpi-label{color:#c8f04e !important}
+  #kpi-strip-bank .kpi-value,
+  #kpi-strip-bank .kpi-value.pos,
+  #kpi-strip-bank .kpi-value.neutral,
+  #kpi-strip-bank .kpi.bank-kpi .kpi-value,
+  .bank-kpi .kpi-value{color:#eaf0f8 !important}
+  #kpi-strip-bank .kpi-value.neg,
+  .bank-kpi .kpi-value.neg{color:#f85149 !important}
+  #kpi-strip-bank .kpi-delta,
+  #kpi-strip-bank .kpi-delta.neutral,
+  #kpi-strip-bank .kpi-delta.pos,
+  .bank-kpi .kpi-delta,
+  .bank-kpi .kpi-delta.neutral,
+  .bank-kpi .kpi-delta.pos{color:#7a8a9e !important}
+  #kpi-strip-bank .kpi-delta.warn,
+  .bank-kpi .kpi-delta.warn{color:#f5c400 !important}
+  #kpi-strip-bank .kpi-delta.neg,
+  .bank-kpi .kpi-delta.neg{color:#f85149 !important}
+  #kpi-strip-bank .kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#c8f04e 0%,transparent 70%);opacity:.55 !important}
+  #kpi-strip-bank .kpi:hover::after{opacity:1 !important}
   #kpi-strip-bank .kpi:nth-child(1){animation-delay:1.5s}
   #kpi-strip-bank .kpi:nth-child(2){animation-delay:1.62s}
   #kpi-strip-bank .kpi:nth-child(3){animation-delay:1.74s}
@@ -240,9 +270,9 @@
   #kpi-strip-bank .kpi:nth-child(8){animation-delay:2.34s}
 
   /* ── ECONOMY-SPECIFIC: FINANCE META PILLS ── */
-  .meta-pill--finance{border-color:rgba(75,156,245,.18);background:rgba(75,156,245,.04)}
-  .meta-pill--finance:hover{border-color:rgba(75,156,245,.45);background:rgba(75,156,245,.08)}
-  .meta-pill--finance span{color:#4b9cf5}
+  .meta-pill--finance{border-color:var(--border);background:var(--surface)}
+  .meta-pill--finance:hover{border-color:rgba(200,240,78,.2);background:var(--surface)}
+  .meta-pill--finance span{color:var(--text)}
   .meta-pill--meta{border-color:rgba(200,240,78,.12)}
 
   /* ── ECONOMY-SPECIFIC: CORNER DECORATIVE RULE ── */
@@ -315,7 +345,7 @@
     <div class="ctrl-wrap" id="scenario-switch">
       <label for="scenario-select">Scenario</label>
       <select id="scenario-select">
-        <option value="portfolio_ppa.json">Bundled Portfolio PPA</option>
+        <option value="portfolio_ppa.json">Portfolio PPA</option>
         <option value="technology_ppa.json">Technology-Specific PPA</option>
       </select>
     </div>
@@ -576,7 +606,7 @@
 
 <!-- H — BANKABILITY ASSESSMENT -->
 <div id="sec-bank" style="border-top:1px solid var(--border);margin-top:4px">
-  <div style="padding:36px 56px 10px;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:#4b9cf5;display:flex;align-items:center;gap:14px"><span style="width:22px;height:1.5px;background:#4b9cf5;border-radius:1px;flex-shrink:0;opacity:.8;display:inline-block"></span>H — Bankability Assessment</div>
+  <div style="padding:36px 56px 10px;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:14px"><span style="width:22px;height:1.5px;background:var(--accent);border-radius:1px;flex-shrink:0;opacity:.8;display:inline-block"></span>H — Bankability Assessment</div>
   <div class="section-narrative">Senior lender metrics quantifying debt serviceability. LLCR ≥ 1.25x and PLCR ≥ 1.20x are the IFC/AIIB bankability thresholds for project finance. P(NPV&gt;0) measures portfolio resilience under joint uncertainty.</div>
 <div class="bank-header">
   <span class="bank-header-label">🏦 Bankability Metrics</span>
