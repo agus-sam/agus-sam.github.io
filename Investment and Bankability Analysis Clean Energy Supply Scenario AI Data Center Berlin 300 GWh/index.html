@@ -1076,7 +1076,7 @@ function renderKPIs(){
   const portProb=typeof portSv.mc_prob_positive==='number'?portSv.mc_prob_positive:null;
   set('kpi-prob',portProb!=null?(portProb*100).toFixed(0)+'<sup>%</sup>':'—',
       portProb!=null&&portProb>=.9?'pos':portProb!=null&&portProb>=.7?'':'neg',
-      portProb!=null&&portProb>=.9?'Low risk — P(NPV>0) portfolio':
+      portProb!=null&&portProb>=.9?'Low risk — P(NPV>0) portfolio':'ok',
       portProb!=null&&portProb>=.7?'Moderate risk — portfolio MC':'High risk or data pending',
       portProb!=null&&portProb>=.9?'':portProb!=null&&portProb>=.7?'warn':'warn');
   // DSCR Status — portfolio verdict only (no cross-technology count)
