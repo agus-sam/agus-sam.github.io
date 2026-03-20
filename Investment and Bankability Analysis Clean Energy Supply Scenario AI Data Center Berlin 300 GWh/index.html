@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">Economic Valuation | Investment Dashboard</title>
+<title id="page-title">Economic Valuation — Investment Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -3128,9 +3128,9 @@ function renderKPIs() {
     sp==null?'Premium earned above the hurdle rate':sp>0?`+${(sp*100).toFixed(1)}pp above hurdle — this is your equity alpha`:`${(sp*100).toFixed(1)}pp — returns don't clear the cost of capital`,spCls);
 
   const pi=p.profitability_index;
-  const pi = pi_raw != null ? 1 + pi_raw : null;
-  const piVCls=pi==null?'neutral':pi>0?'pos':pi>=-0.1?'warn':'neg';
-  set('kpi-pi',pi!=null?pi.toFixed(3):'—',piVCls,pi==null?'Value per euro of capital deployed':pi>0?'Every euro invested creates '+pi.toFixed(2)+' euro above cost':'Capital is being destroyed, not created','neutral');
+  const piAdj=pi!=null?pi+1:null;
+  const piVCls=piAdj==null?'neutral':piAdj>1?'pos':piAdj>=0.9?'warn':'neg';
+  set('kpi-pi',piAdj!=null?piAdj.toFixed(3):'—',piVCls,piAdj==null?'Value per euro of capital deployed':piAdj>1?'Every \u20AC1 invested returns \u20AC'+piAdj.toFixed(2)+' \u2014 project creates value':'Capital is being destroyed, not created','neutral');
 
   // B — Investor
   const moic=p.moic; const mCls=moic==null?'neutral':moic>=2?'pos':moic>=1?'warn':'neg';
@@ -3344,7 +3344,7 @@ function renderKPITable() {
       <td class="${iCls(t.irr)}">${t.irr!=null?P(t.irr,2):'—'}</td>
       <td class="${iCls(t.project_irr_unlevered)}">${t.project_irr_unlevered!=null?P(t.project_irr_unlevered,2):'—'}</td>
       <td class="${sp!=null?sp>0?'ok':sp>=-0.02?'warn':'fail':''}">${sp!=null?Pp(sp,1):'—'}</td>
-      <td class="${pi!=null?pi>0?'ok':pi>=-0.05?'warn':'fail':''}">${pi!=null?pi.toFixed(3):'—'}</td>
+      <td class="${pi!=null?(pi+1)>1?'ok':(pi+1)>=0.95?'warn':'fail':''}">${pi!=null?(pi+1).toFixed(3):'—'}</td>
       <td class="${mCls(t.moic)}">${X(t.moic)}</td>
       <td class="${dCls(t.min_dscr)}">${t.min_dscr!=null?t.min_dscr.toFixed(2)+'x':'—'}</td>
     </tr>`;
@@ -3576,9 +3576,9 @@ function renderScorecard() {
 
   const dims=[
     {label:'Returns',
-     ok:p.irr!=null&&p.irr>wc&&(p.profitability_index||0)>0,
+     ok:p.irr!=null&&p.irr>wc&&(p.profitability_index!=null?(p.profitability_index+1):0)>1,
      warn:p.irr!=null&&p.irr>=wc-0.02,
-     detail:p.irr!=null?`Eq. IRR ${P(p.irr,1)} · PI ${p.profitability_index!=null?p.profitability_index.toFixed(2):'—'}`:'IRR unavailable'},
+     detail:p.irr!=null?`Eq. IRR ${P(p.irr,1)} · PI ${p.profitability_index!=null?(p.profitability_index+1).toFixed(2):'—'}`:'IRR unavailable'},
     {label:'Debt service',
      ok:p.min_dscr!=null&&p.min_dscr>=dt&&p.llcr!=null&&p.llcr>=1.25,
      warn:p.min_dscr!=null&&p.min_dscr>=dt-0.15&&p.llcr!=null&&p.llcr>=1.10,
