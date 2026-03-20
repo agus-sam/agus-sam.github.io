@@ -1426,17 +1426,30 @@ footer::before {
   top: 0;
   z-index: 200;
   user-select: none;
+  /* Allow nav to grow taller when tabs wrap */
+  flex-wrap: wrap;
+  min-height: 44px;
+}
+
+/* Tab group sits in normal flow; arrows are pushed right via margin-left:auto */
+.slide-nav-tabs {
+  display: flex;
+  flex-wrap: wrap;          /* tabs wrap onto next line when viewport too narrow */
+  flex: 1 1 auto;
+  min-width: 0;
+  /* When wrapping, draw a separator between the two rows */
+  align-content: flex-start;
 }
 
 .slide-nav-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 18px;
+  gap: 6px;
+  padding: 0 14px;
   height: 44px;
   font-family: 'DM Mono', monospace;
   font-size: 9.5px;
-  letter-spacing: .12em;
+  letter-spacing: .10em;
   text-transform: uppercase;
   color: var(--muted);
   background: none;
@@ -1446,6 +1459,7 @@ footer::before {
   transition: color .2s, border-color .2s, background .2s;
   white-space: nowrap;
   position: relative;
+  flex-shrink: 0;           /* never shrink individual tabs — wrap instead */
 }
 
 .slide-nav-btn::after {
@@ -1460,11 +1474,8 @@ footer::before {
   transition: transform .25s cubic-bezier(.4,0,.2,1);
 }
 
-.slide-nav-btn.active {
-  color: var(--text);
-}
+.slide-nav-btn.active { color: var(--text); }
 .slide-nav-btn.active::after { transform: scaleX(1); }
-
 .slide-nav-btn:hover { color: var(--text); background: rgba(200,240,78,.03); }
 
 .slide-nav-badge {
@@ -1476,16 +1487,34 @@ footer::before {
   color: var(--accent);
   padding: 2px 7px;
   border-radius: 10px;
+  flex-shrink: 0;
 }
 
-.slide-nav-sep {
-  flex: 1;
+/* ── Responsive badge hiding ──────────────────────────────────────────
+   Hide badges progressively as viewport shrinks so tabs stay on one row
+   as long as possible, only wrapping when the labels alone no longer fit. */
+@media (max-width: 1100px) {
+  .slide-nav-badge { display: none; }
 }
+@media (max-width: 720px) {
+  .slide-nav-btn { padding: 0 10px; font-size: 9px; letter-spacing: .08em; }
+}
+@media (max-width: 520px) {
+  /* Icons only — hide text labels, show SVG only */
+  .slide-nav-btn span:not(svg) { display: none; }
+  .slide-nav-btn { padding: 0 10px; gap: 0; }
+}
+
+.slide-nav-sep { flex: 1 1 auto; min-width: 4px; }
 
 .slide-nav-arrows {
   display: flex;
+  align-items: center;
   gap: 2px;
   padding: 0 16px;
+  flex-shrink: 0;
+  height: 44px;
+  margin-left: auto;       /* always pushed to the right end */
 }
 
 .slide-arrow {
@@ -2124,36 +2153,38 @@ footer::before {
 
 <!-- ══ SLIDE NAVIGATION ═══════════════════════════════════════════════ -->
 <nav class="slide-nav" id="slide-nav">
-  <button class="slide-nav-btn active" data-slide="0" onclick="goSlide(0)">
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.5 3.5h1v4.25l3 1.5-.5 1-3.5-1.75V4.5z"/></svg>
-    Verdict
-    <span class="slide-nav-badge">IC · C-Suite</span>
-  </button>
-  <button class="slide-nav-btn" data-slide="1" onclick="goSlide(1)">
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M1 11l4-4 3 3 4-5 3 3V13H1v-2z"/></svg>
-    Portfolio Returns
-    <span class="slide-nav-badge">Equity</span>
-  </button>
-  <button class="slide-nav-btn" data-slide="2" onclick="goSlide(2)">
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M2 13V5l5-3 5 3v8H9V9H7v4H2z"/></svg>
-    Cashflow &amp; Debt
-    <span class="slide-nav-badge">Credit</span>
-  </button>
-  <button class="slide-nav-btn" data-slide="3" onclick="goSlide(3)">
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v2H2zm0 4h12v2H2zm0 4h8v2H2z"/></svg>
-    Bankability
-    <span class="slide-nav-badge">Lender</span>
-  </button>
-  <button class="slide-nav-btn" data-slide="4" onclick="goSlide(4)">
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14L8 1zm0 3.5l4 7.5H4l4-7.5zm-.5 2.5v2.5h1V7h-1zm0 3.5v1h1v-1h-1z"/></svg>
-    Risk &amp; Stress
-    <span class="slide-nav-badge">Stochastic</span>
-  </button>
-  <button class="slide-nav-btn" data-slide="5" onclick="goSlide(5)">
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a2 2 0 100 4 2 2 0 000-4zm0 5C5 7 2 9 2 10v1h12v-1c0-1-3-3-6-3z M13 7l1 5H2l1-5"/></svg>
-    ESG &amp; Climate
-    <span class="slide-nav-badge">Impact</span>
-  </button>
+  <div class="slide-nav-tabs">
+    <button class="slide-nav-btn active" data-slide="0" onclick="goSlide(0)">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.5 3.5h1v4.25l3 1.5-.5 1-3.5-1.75V4.5z"/></svg>
+      Verdict
+      <span class="slide-nav-badge">IC · C-Suite</span>
+    </button>
+    <button class="slide-nav-btn" data-slide="1" onclick="goSlide(1)">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M1 11l4-4 3 3 4-5 3 3V13H1v-2z"/></svg>
+      Portfolio Returns
+      <span class="slide-nav-badge">Equity</span>
+    </button>
+    <button class="slide-nav-btn" data-slide="2" onclick="goSlide(2)">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M2 13V5l5-3 5 3v8H9V9H7v4H2z"/></svg>
+      Cashflow &amp; Debt
+      <span class="slide-nav-badge">Credit</span>
+    </button>
+    <button class="slide-nav-btn" data-slide="3" onclick="goSlide(3)">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v2H2zm0 4h12v2H2zm0 4h8v2H2z"/></svg>
+      Bankability
+      <span class="slide-nav-badge">Lender</span>
+    </button>
+    <button class="slide-nav-btn" data-slide="4" onclick="goSlide(4)">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14L8 1zm0 3.5l4 7.5H4l4-7.5zm-.5 2.5v2.5h1V7h-1zm0 3.5v1h1v-1h-1z"/></svg>
+      Risk &amp; Stress
+      <span class="slide-nav-badge">Stochastic</span>
+    </button>
+    <button class="slide-nav-btn" data-slide="5" onclick="goSlide(5)">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a2 2 0 100 4 2 2 0 000-4zm0 5C5 7 2 9 2 10v1h12v-1c0-1-3-3-6-3z M13 7l1 5H2l1-5"/></svg>
+      ESG &amp; Climate
+      <span class="slide-nav-badge">Impact</span>
+    </button>
+  </div>
   <div class="slide-nav-sep"></div>
   <div class="slide-nav-arrows">
     <button class="slide-arrow" id="arrow-prev" onclick="goSlide(Math.max(0,_currentSlide-1))" disabled>&#8592;</button>
@@ -4097,6 +4128,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (vp && first) vp.style.height = first.scrollHeight + 'px';
     });
   });
+
+  // ── Re-sync viewport height when nav wraps (tablet/resize) ───────────
+  const nav = document.getElementById('slide-nav');
+  if (nav && typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(() => {
+      // When the nav grows (wraps to 2 rows), recalculate active slide height
+      const vp = document.querySelector('.slide-viewport');
+      const active = document.querySelector('.slide.slide-active');
+      if (vp && active) vp.style.height = active.scrollHeight + 'px';
+    }).observe(nav);
+  }
 });
 
 </script>
