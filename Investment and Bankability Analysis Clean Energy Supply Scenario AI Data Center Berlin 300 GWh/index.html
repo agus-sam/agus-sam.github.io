@@ -2089,7 +2089,7 @@ footer::before {
     <em id="project-dashboard-label">Economic</em> <span id="project-type-label">Dashboard</span>
   </h1>
   <p class="header-sub" id="project-description" style="display:none"></p>
-  <p class="header-sub" id="header-sub">Six tabs. One investment story. Navigate from the <strong>Verdict</strong> — the one-page IC summary — through <strong>Key Findings</strong>, deep-dive <strong>Valuation &amp; Returns</strong>, <strong>Cashflow &amp; Debt</strong> serviceability, <strong>Risk &amp; Sensitivity</strong> stress testing, and <strong>ESG &amp; Operations</strong> impact. Each tab is self-contained and audience-specific.</p>
+  <p class="header-sub" id="header-sub">Six views. One investment case. Begin at the <strong>Verdict</strong> — the IC one-pager — then move through <strong>Portfolio Returns</strong> for equity value analysis, <strong>Cashflow &amp; Debt</strong> for serviceability, <strong>Bankability</strong> for lender covenant checks, <strong>Risk &amp; Stress</strong> for scenario testing, and <strong>ESG &amp; Climate</strong> for impact and green financing eligibility. Each view is designed for its audience.</p>
   <div class="header-meta">
     <div class="meta-pill meta-pill--finance">WACC <span id="pill-wacc">—</span></div>
     <div class="meta-pill meta-pill--finance">IRR Spread <span id="pill-irr-spread">—</span></div>
@@ -2255,12 +2255,12 @@ footer::before {
 <div class="exec-charts-row">
   <div class="panel" style="animation-delay:.1s">
     <div class="panel-title">Top risk drivers</div>
-    <div class="panel-sub">Which assumption, if wrong by ±20%, causes the most NPV damage. The longest bar must be contractually protected.</div>
+    <div class="panel-sub">Which assumption, if wrong by ±20%, causes the greatest NPV damage. The driver with the longest bar warrants the tightest contractual protection.</div>
     <div class="exec-tornado-wrap"><canvas id="execTornadoChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <div class="panel-title">Probability of positive return</div>
-    <div class="panel-sub">5,000 Monte Carlo simulations. Green = profitable outcome. P(Positive) ≥ 90% is the project finance bankability threshold.</div>
+    <div class="panel-sub">5,000 Monte Carlo simulations across all key variables. Green outcomes are NPV-positive. P(Positive) ≥ 90% constitutes the project finance bankability threshold.</div>
     <div class="exec-mc-wrap"><canvas id="execMCChart"></canvas></div>
     <div class="mc-percentiles">
       <div class="mc-pct-item"><div class="mc-pct-label">P10 Downside</div><div class="mc-pct-val" id="ex-p10">—</div></div>
@@ -2367,30 +2367,30 @@ footer::before {
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('npvBar','npv_by_technology')"><svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg></button>
     <div class="panel-title">NPV by technology</div>
-    <div class="panel-sub">Green bar = discounted cashflows exceed equity invested. Each bar is NPV at the WACC hurdle — the height is the surplus value created above the cost of capital.</div>
+    <div class="panel-sub">Each bar represents NPV at the WACC hurdle — the surplus value created above the cost of capital. A positive bar confirms that discounted cashflows exceed equity invested.</div>
     <div class="chart-wrap" style="height:240px"><canvas id="npvBar"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <button class="dl-btn" onclick="dlChart('irrWaterfall','irr_waterfall')"><svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg></button>
     <div class="panel-title">Leverage effect — how debt amplifies equity returns</div>
-    <div class="panel-sub">Project IRR (unlevered) → Equity IRR (levered). The gap is the financing effect. If debt costs less than the asset earns, leverage is working in your favour.</div>
+    <div class="panel-sub">Project IRR (unlevered) steps up to Equity IRR (levered). The gap reflects the financing effect. Where debt costs less than the asset earns, leverage is accretive to equity returns.</div>
     <div class="chart-wrap" style="height:240px"><canvas id="irrWaterfall"></canvas></div>
   </div>
 </div>
 
 <!-- IRR vs WACC + comparison table -->
 <div class="section-divider">Return Comparison — Which technologies clear the hurdle rate?</div>
-<div class="section-narrative">The hurdle rate is the minimum equity must earn to justify the risk of this investment. Bars above the WACC line are creating value; bars below are destroying it. The gap between the bar and the WACC line is the equity premium — your margin of safety against adverse scenarios.</div>
+<div class="section-narrative">The hurdle rate represents the minimum return equity must achieve to justify the risk of deployment. Technologies whose IRR clears the WACC line are creating value; those below are destroying it. The gap between bar and hurdle is the equity premium — the margin available to absorb adverse outcomes before the investment case breaks down.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('irrChart','irr_vs_wacc')"><svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg></button>
     <div class="panel-title">IRR vs WACC by technology</div>
-    <div class="panel-sub">Dashed line = WACC hurdle. Bars above create equity value; bars below destroy it. Bar height above line = alpha generated.</div>
+    <div class="panel-sub">Dashed line marks the WACC hurdle. Technologies above the line are generating equity alpha; those below are value-dilutive. Bar height above the line represents excess return over cost of capital.</div>
     <div class="chart-wrap" style="height:250px"><canvas id="irrChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <div class="panel-title">Master return table</div>
-    <div class="panel-sub">Capital efficiency (PI), cash multiple (MOIC), minimum debt coverage (Min DSCR), and spread over hurdle — all technologies side by side.</div>
+    <div class="panel-sub">Capital efficiency (PI), cash-on-cash multiple (MOIC), minimum debt service coverage (Min DSCR), and IRR spread over hurdle — all technologies benchmarked side by side.</div>
     <div style="overflow-x:auto">
       <table class="dt" id="kpi-table">
         <thead><tr><th>Technology</th><th>CAPEX</th><th>NPV</th><th>Eq. IRR</th><th>Proj. IRR</th><th>Alpha</th><th>PI</th><th>MOIC</th><th>Min DSCR</th></tr></thead>
@@ -2434,7 +2434,7 @@ footer::before {
 
 <!-- Annual cashflow chart -->
 <div class="section-divider" style="margin-top:0">Annual Cashflow — FCFE, cumulative breakeven &amp; overlays</div>
-<div class="section-narrative">The financial heartbeat year by year. Bars show free cash flow to equity holders after all obligations — debt service, tax, OPEX. The cumulative line shows when the equity investment breaks even. Use the overlay to stress any single variable.</div>
+<div class="section-narrative">The asset's financial cadence, year by year. Bars reflect free cash flow to equity after all obligations — debt service, tax, and operating costs. The cumulative line shows the point at which the equity investment recovers its cost. Switch the overlay to DSCR to track covenant proximity across the debt tenor.</div>
 <div class="grid-full">
   <div class="panel-wide" style="animation-delay:.1s">
     <div class="panel-controls">
@@ -2454,7 +2454,7 @@ footer::before {
         </div>
       </div>
     </div>
-    <div class="panel-sub">Switch overlay to DSCR to see covenant proximity year by year. Bars below zero signal equity cash shortfall.</div>
+    <div class="panel-sub">Select DSCR as the overlay to monitor covenant proximity year by year. Bars below zero signal an equity cashflow shortfall.</div>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#4E9AF1"></div>FCFE (equity cashflow)</div>
       <div class="legend-item"><div class="legend-dot" style="background:rgba(184,232,54,.4)"></div>Cumulative FCFE</div>
@@ -2467,17 +2467,17 @@ footer::before {
 
 <!-- Debt amortisation + DSCR bars -->
 <div class="section-divider">Debt Service — Amortisation profile &amp; coverage ratio by technology</div>
-<div class="section-narrative">Lenders do not think in IRRs. They think in coverage ratios. The chart shows debt balance eroding over the loan tenor. The bar chart shows DSCR relative to the 1.20x covenant floor — a breach in any year triggers cash lock-up and potentially acceleration.</div>
+<div class="section-narrative">Lenders assess risk through coverage ratios, not returns. The chart shows the senior facility amortising over the loan tenor. The bar chart tracks DSCR against the covenant floor — a breach in any year triggers cash lock-up provisions and, in severe cases, acceleration of the outstanding balance.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('debtChart','debt_amortisation')"><svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg></button>
     <div class="panel-title">Debt balance — how the facility unwinds</div>
-    <div class="panel-sub">Annuity structure: constant total payment, declining interest share as principal falls. The steeper the early curve, the faster de-leveraging.</div>
+    <div class="panel-sub">Annuity structure: total debt service is constant; the interest component declines as principal amortises. A steeper early curve indicates faster de-leveraging and improving coverage headroom.</div>
     <div class="chart-wrap" style="height:240px"><canvas id="debtChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <div class="panel-title">DSCR by technology vs covenant floor</div>
-    <div class="panel-sub">Bar length = average DSCR. Trough DSCR shown in the table. Any technology with Min DSCR below the covenant floor is a breach risk — the trough year is the critical stress point lenders will model.</div>
+    <div class="panel-sub">Bar length reflects average DSCR; the trough figure is shown in the table below. Any technology with a minimum DSCR below the covenant floor represents a breach risk — lenders will focus their stress testing on the trough year.</div>
     <div id="dscr-bars" style="margin-top:8px"></div>
     <table class="dt" style="margin-top:16px">
       <thead><tr><th>Technology</th><th>Avg DSCR</th><th>Min DSCR</th><th>Debt/EBITDA</th><th>Status</th></tr></thead>
@@ -2507,7 +2507,7 @@ footer::before {
 
 <!-- Senior lender scorecard -->
 <div class="section-divider" style="margin-top:0">Senior Lender Scorecard — IFC / World Bank investment-grade thresholds</div>
-<div class="section-narrative">This is the section a project finance lender reads first. LLCR ≥ 1.25x and PLCR ≥ 1.20x are the IFC/World Bank thresholds for investment-grade project debt. DSCR covenant headroom shows how much buffer exists before a lock-up event triggers. P(Positive NPV) ≥ 90% is the Monte Carlo bankability pass mark.</div>
+<div class="section-narrative">This scorecard reflects the metrics a senior project finance lender reviews first. LLCR ≥ 1.25x and PLCR ≥ 1.20x are the IFC/World Bank thresholds for investment-grade project debt. DSCR covenant headroom quantifies the buffer before a cash lock-up event is triggered. P(Positive NPV) ≥ 90% is the Monte Carlo bankability pass mark.</div>
 
 <div class="bank-header">
   <span class="bank-header-label">🏦 Coverage Ratios &amp; Covenant Status</span>
@@ -2580,12 +2580,12 @@ footer::before {
 
 <!-- PPA strategy -->
 <div class="section-divider">PPA Pricing — Revenue floor, break-even &amp; margin of safety</div>
-<div class="section-narrative">Revenue in renewable energy is almost entirely a function of the contracted PPA price. The LCOE sets the cost floor — the minimum price at which the project breaks even over its lifetime. The NPV-neutral PPA is the exact price at which NPV = 0. Everything above that is margin. The wider the gap between contracted PPA and break-even, the more revenue erosion the project can absorb without becoming insolvent.</div>
+<div class="section-narrative">Revenue in renewable energy is almost entirely a function of the contracted PPA price. LCOE establishes the cost floor — the minimum price at which the project breaks even over its lifetime. The NPV-neutral PPA is the precise price at which NPV equals zero. Every increment above that threshold is margin. The wider the spread between the contracted PPA and the break-even price, the more revenue erosion the project can absorb before debt service is impaired.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('lcoeChart','ppa_vs_lcoe')"><svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg></button>
     <div class="panel-title">PPA vs LCOE vs break-even floor</div>
-    <div class="panel-sub">Blue = LCOE cost floor. Green = contracted PPA. Amber line = NPV-neutral break-even. A PPA above both bars and the amber line confirms positive margin.</div>
+    <div class="panel-sub">Blue bars show the LCOE cost floor. Green bars show the contracted PPA. The amber line marks the NPV-neutral break-even. A PPA above both bars and the amber line confirms positive revenue margin.</div>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:rgba(75,156,245,.85)"></div>LCOE — lifetime cost floor</div>
       <div class="legend-item"><div class="legend-dot" style="background:rgba(184,232,54,.55);border:1px solid rgba(184,232,54,.6)"></div>PPA — contracted revenue</div>
@@ -2595,7 +2595,7 @@ footer::before {
   </div>
   <div class="panel" style="animation-delay:.2s">
     <div class="panel-title">Revenue protection table</div>
-    <div class="panel-sub">Margin of safety = (PPA − Break-even) / PPA. Above 20% means the project can absorb significant PPA renegotiation pressure without NPV turning negative.</div>
+    <div class="panel-sub">Margin of safety = (PPA − Break-even) / PPA. A reading above 20% indicates the project can absorb material PPA renegotiation pressure without NPV turning negative.</div>
     <div class="insight-grid" id="lcoe-insights" style="margin-top:8px"></div>
     <div style="margin-top:16px">
       <table class="dt" id="ppa-table">
@@ -2642,7 +2642,7 @@ footer::before {
 
 <!-- Sensitivity -->
 <div class="section-divider" style="margin-top:0">Sensitivity Analysis — Single-variable ±20% NPV impact</div>
-<div class="section-narrative">No forecast is certain. This section isolates each assumption and shocks it by ±20% while holding all others constant. The driver at the top of the tornado — the longest bar — is the assumption your NPV is most exposed to. That is the variable requiring the tightest contractual protection, the strongest offtake agreement, and the most conservative underwriting assumption.</div>
+<div class="section-narrative">No projection is certain. Each assumption is isolated and shocked by ±20% while all others are held constant. The driver at the top of the tornado — the one with the longest bar — represents the variable to which NPV is most sensitive. That is the input requiring the tightest contractual protection, the most conservative underwriting assumption, and the strongest offtake structure.</div>
 
 <!-- Risk KPI strip — P90 bankability + MC summary -->
 <div class="kpi-strip-header">
@@ -2664,13 +2664,13 @@ footer::before {
       <div class="panel-title">Tornado — what breaks this deal?</div>
       <div class="ctrl-wrap"><label for="torn-tech">Technology</label><select id="torn-tech"></select></div>
     </div>
-    <div class="panel-sub">Bar length = NPV swing if that driver moves ±20%. Ranked by impact magnitude. Top drivers need contractual protection.</div>
+    <div class="panel-sub">Bar length shows the NPV swing if that driver shifts by ±20%, ranked by impact magnitude. Drivers at the top demand contractual protection and conservative base-case assumptions.</div>
     <div class="chart-wrap" style="height:280px"><canvas id="tornadoChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <button class="dl-btn" onclick="dlChart('scenarioChart','scenario_npv')"><svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg></button>
     <div class="panel-title">P90 bankability stress — NPV under yield shortfall</div>
-    <div class="panel-sub">P50 = base case. P75 = 5% energy yield reduction. P90 = 1-in-10 year shortfall — the industry standard bankability stress. Green bars confirm solvency under the lender's required stress scenario.</div>
+    <div class="panel-sub">P50 is the base case. P75 applies a 5% energy yield reduction. P90 represents a 1-in-10 year shortfall — the industry standard bankability stress. Positive bars confirm solvency under the lender's required downside scenario.</div>
     <div class="chart-wrap" style="height:250px"><canvas id="scenarioChart"></canvas></div>
     <div class="insight-grid" id="scenario-insights" style="margin-top:14px"></div>
   </div>
@@ -2678,7 +2678,7 @@ footer::before {
 
 <!-- Monte Carlo -->
 <div class="section-divider">Stochastic Assessment — 5,000 simulated futures, all variables simultaneously</div>
-<div class="section-narrative">Rather than moving one variable at a time, Monte Carlo throws all of them simultaneously — energy yield, CAPEX, OPEX, PPA price, and cost of equity each drawn from probability distributions. The result is the full statistical spread of possible NPV outcomes. The P(Positive Return) metric is the project finance bankability pass mark: below 70% is difficult to defend; above 90% is fundable.</div>
+<div class="section-narrative">Rather than shifting one variable at a time, this simulation draws all inputs simultaneously — energy yield, CAPEX, OPEX, PPA price, and cost of equity each sampled from calibrated probability distributions across 5,000 iterations. The result is the full statistical distribution of possible NPV outcomes. P(Positive Return) is the bankability pass mark: below 70% is difficult to defend to a credit committee; above 90% is fundable at investment-grade terms.</div>
 
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
@@ -2686,12 +2686,12 @@ footer::before {
       <div class="panel-title">NPV distribution — all scenarios</div>
       <div class="ctrl-wrap"><label for="mc-tech">Technology</label><select id="mc-tech"></select></div>
     </div>
-    <div class="panel-sub">Green = NPV positive. Red = NPV negative. Narrow distribution = low uncertainty. Wide = high uncertainty. P10/P90 are the lender's downside/upside anchors.</div>
+    <div class="panel-sub">Green bars represent NPV-positive outcomes; red bars represent negative. A narrow distribution signals low uncertainty; a wide spread indicates higher model sensitivity. P10 and P90 are the lender's downside and upside anchors respectively.</div>
     <div class="chart-wrap" style="height:250px"><canvas id="mcChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <div class="panel-title">Risk summary — P(Positive Return) by technology</div>
-    <div class="panel-sub">The probability column is the single most important number for bankability. Below 70% = difficult. 70–90% = watch. Above 90% = fundable.</div>
+    <div class="panel-sub">The probability column is the primary bankability signal. Below 70% indicates a structurally challenged investment; 70–90% warrants further mitigation; above 90% meets the threshold for senior debt funding.</div>
     <div style="overflow-x:auto">
       <table class="dt" id="mc-table">
         <thead><tr><th>Technology</th><th>P10 NPV</th><th>P50 NPV</th><th>P90 NPV</th><th>P(Positive)</th><th>Risk Profile</th></tr></thead>
@@ -2737,7 +2737,7 @@ footer::before {
 
 <!-- Asset performance gauges -->
 <div class="section-divider" style="margin-top:0">Asset Performance — Generation efficiency &amp; CO₂ impact</div>
-<div class="section-narrative">How hard the asset works and what it avoids emitting. Capacity factor is the primary driver of revenue — it determines how much of the installed capacity is converted to actual energy sales. Curtailment reflects grid constraints outside the asset owner's control. CO₂ abatement underpins green financing eligibility and sustainability reporting.</div>
+<div class="section-narrative">These metrics describe how efficiently the asset converts installed capacity into delivered energy and carbon displacement. Capacity factor is the primary revenue driver — it determines what fraction of nameplate capacity is translated into actual energy sales. Curtailment captures grid-imposed constraints outside the owner's control. CO₂ abatement underpins green financing eligibility, sustainability reporting obligations, and carbon credit frameworks.</div>
 
 <div class="bank-header" style="margin-top:0">
   <span class="bank-header-label">⚡ Operational Performance</span>
@@ -2791,11 +2791,11 @@ footer::before {
 
 <!-- Technology CO₂ breakdown -->
 <div class="section-divider">Carbon Intensity by Technology</div>
-<div class="section-narrative">Not all technologies in a mixed portfolio are carbon-negative relative to the grid. Gas peakers add emissions, storage may have embodied carbon from charging. This table breaks down each technology's contribution — DFI eligibility typically requires net portfolio abatement and individual technology emissions intensity below a threshold (typically 100 gCO₂/kWh).</div>
+<div class="section-narrative">Not every technology in a mixed portfolio is carbon-negative relative to the grid. Gas peakers add emissions; storage assets may carry embodied carbon from grid-sourced charging. This table disaggregates each technology's contribution. DFI eligibility typically requires net positive portfolio abatement and individual technology emissions intensity below a defined threshold — generally 100 gCO₂/kWh.</div>
 <div class="grid-full">
   <div class="panel-wide" style="animation-delay:.1s">
     <div class="panel-title">Technology CO₂ profile — annual avoided emissions &amp; intensity</div>
-    <div class="panel-sub">Positive annual CO₂ = emissions avoided vs grid. Negative = technology emits more than the grid baseline. Net portfolio must be positive for DFI green classification.</div>
+    <div class="panel-sub">Positive annual CO₂ figures indicate emissions avoided relative to the grid baseline. Negative figures indicate the technology emits above the grid average. Net portfolio abatement must remain positive for DFI green classification.</div>
     <div id="co2-tech-breakdown" style="margin-top:16px"></div>
   </div>
 </div>
