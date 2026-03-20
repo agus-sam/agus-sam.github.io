@@ -6,7 +6,8 @@
     "project_description": "Sustainable Energy Supply for an AI Data Center in Berlin (300 GWh/year) Hypothetical: Designed and optimized a low-carbon power system using local renewables, storage, and grid supply to reliably meet demand while minimizing cost and CO2 emissions.",
     "project": "Economic Dashboard",
     "subtitle": "Investment & Asset Management",
-    "description": "Economic valuation \u00b7 NPV \u00b7 IRR \u00b7 DSCR \u00b7 Monte Carlo \u00b7 CO\u2082"
+    "description": "Economic valuation \u00b7 NPV \u00b7 IRR \u00b7 DSCR \u00b7 Monte Carlo \u00b7 CO\u2082",
+    "grid_emission_factor": 380.0
   },
   "parameters": {
     "cost_of_equity": 0.126,
@@ -22,7 +23,8 @@
     "working_capital_days": 30.0,
     "decommissioning_pct": 0.0,
     "residual_value_pct": 0.0,
-    "amort_method": "annuity"
+    "amort_method": "annuity",
+    "grid_emission_factor": 380.0
   },
   "technologies": {
     "Wind": {
@@ -58,10 +60,13 @@
       "curtailed_energy": 25772.45,
       "capacity_factor_yr1": 0.345521,
       "curtailment_rate": 0.117975,
-      "co2_avoided_annual": 74.954103,
-      "co2_avoided_lifetime": 1765.615214,
+      "co2_avoided_annual": 71.100422,
+      "co2_avoided_lifetime": 1674.838082,
+      "co2_actual_annual": 2.119525,
+      "co2_actual_lifetime": 49.927422,
+      "co2_emitted_csv": 0.0,
       "tech_co2_factor": 11.0,
-      "grid_co2_factor": 400.0,
+      "grid_co2_factor": 380.0,
       "timeseries": {
         "years": [
           1.0,
@@ -762,10 +767,13 @@
       "curtailed_energy": 3620.37,
       "capacity_factor_yr1": 0.113894,
       "curtailment_rate": 0.113294,
-      "co2_avoided_annual": 10.115606,
-      "co2_avoided_lifetime": 241.115616,
+      "co2_avoided_annual": 9.548905,
+      "co2_avoided_lifetime": 227.607739,
+      "co2_actual_annual": 1.218406,
+      "co2_actual_lifetime": 29.041937,
+      "co2_emitted_csv": 0.0,
       "tech_co2_factor": 43.0,
-      "grid_co2_factor": 400.0,
+      "grid_co2_factor": 380.0,
       "timeseries": {
         "years": [
           1.0,
@@ -1462,10 +1470,13 @@
       "curtailed_energy": 0.0,
       "capacity_factor_yr1": 0.29586,
       "curtailment_rate": 0.0,
-      "co2_avoided_annual": -8.19661,
-      "co2_avoided_lifetime": -200.07186,
+      "co2_avoided_annual": -44591.392093,
+      "co2_avoided_lifetime": -1114805.252145,
+      "co2_actual_annual": 44626.0,
+      "co2_actual_lifetime": 1115650.0,
+      "co2_emitted_csv": 44626.0,
       "tech_co2_factor": 490.0,
-      "grid_co2_factor": 400.0,
+      "grid_co2_factor": 380.0,
       "timeseries": {
         "years": [
           1.0,
@@ -2162,10 +2173,13 @@
       "curtailed_energy": 0.0,
       "capacity_factor_yr1": 0.061256,
       "curtailment_rate": 0.0,
-      "co2_avoided_annual": 0.675559,
-      "co2_avoided_lifetime": 8.830606,
+      "co2_avoided_annual": 0.640466,
+      "co2_avoided_lifetime": 8.371874,
+      "co2_actual_annual": 0.026321,
+      "co2_actual_lifetime": 0.34405,
+      "co2_emitted_csv": 0.0,
       "tech_co2_factor": 15.0,
-      "grid_co2_factor": 400.0,
+      "grid_co2_factor": 380.0,
       "timeseries": {
         "years": [
           1.0,
@@ -2652,8 +2666,11 @@
       "curtailed_energy": 29392.82,
       "capacity_factor_yr1": 0.204133,
       "curtailment_rate": 0.085633,
-      "co2_avoided_annual": 77.548659,
-      "co2_avoided_lifetime": 1815.489576,
+      "co2_avoided_annual": -44510.1023,
+      "co2_avoided_lifetime": -1112894.434451,
+      "co2_actual_annual": 44629.364252,
+      "co2_actual_lifetime": 1115729.313409,
+      "co2_emitted_csv": 44626.0,
       "tech_co2_factor": null,
       "grid_co2_factor": null,
       "timeseries": {
