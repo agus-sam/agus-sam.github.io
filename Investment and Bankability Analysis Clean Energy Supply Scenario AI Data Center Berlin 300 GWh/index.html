@@ -522,6 +522,8 @@ h1 em {
 #kpi-strip-bank .kpi:nth-child(6) { animation-delay: 2.10s; }
 #kpi-strip-bank .kpi:nth-child(7) { animation-delay: 2.22s; }
 #kpi-strip-bank .kpi:nth-child(8) { animation-delay: 2.34s; }
+#kpi-strip-bank .kpi:nth-child(9) { animation-delay: 2.46s; }
+#kpi-strip-pricing .kpi:nth-child(5) { animation-delay: 2.58s; }
 
 /* ─── Executive Narrative ────────────────────────────────────────────── */
 
@@ -1307,7 +1309,7 @@ footer::before {
 </div>
 <div id="status-toast"></div>
 
-<!-- Header -->
+<!-- Header — preserved exactly -->
 <header>
   <div class="corner-rule"></div>
   <div class="header-map-wrap hidden" id="header-map-wrap">
@@ -1319,16 +1321,10 @@ footer::before {
     <em id="project-dashboard-label">Economic</em> <span id="project-type-label">Dashboard</span>
   </h1>
   <p class="header-sub" id="project-description" style="display:none"></p>
-  <p class="header-sub" id="header-sub">Investment-grade project finance analysis across the full technology portfolio — NPV, IRR, DSCR, LLCR, PLCR, LCOE, PPA strategy, sensitivity, and Monte Carlo risk assessment.</p>
+  <p class="header-sub" id="header-sub">Institutional investment-grade project finance — NPV · Equity Alpha · Profitability Index · DSCR headroom · LLCR · PLCR · LCOE · CO₂ Abatement · Break-even PPA · Monte Carlo</p>
   <div class="header-meta">
     <div class="meta-pill meta-pill--finance">WACC <span id="pill-wacc">—</span></div>
-    <div class="ctrl-wrap" id="scenario-switch">
-      <label for="scenario-select">Scenario</label>
-      <select id="scenario-select">
-        <option value="portfolio_ppa.json">Portfolio PPA</option>
-        <option value="technology_ppa.json">Technology-Specific PPA</option>
-      </select>
-    </div>
+    <div class="meta-pill meta-pill--finance">IRR Spread <span id="pill-irr-spread">—</span></div>
     <div class="meta-pill meta-pill--finance">Inflation <span id="pill-inflation">—</span></div>
     <div class="meta-pill meta-pill--finance">Debt Ratio <span id="pill-debt">—</span></div>
     <div class="meta-pill meta-pill--finance">Tax Rate <span id="pill-tax">—</span></div>
@@ -1338,8 +1334,14 @@ footer::before {
     <div class="meta-divider"></div>
     <div class="meta-pill meta-pill--meta">Generated <span id="pill-date">—</span></div>
     <div class="meta-pill meta-pill--meta">Currency <span id="pill-currency">—</span></div>
-    <div class="meta-pill" id="pill-units-wrap" style="display:none">Units <span id="pill-units">—</span></div>
     <div class="meta-pill meta-pill--meta">Technologies <span id="pill-techs">—</span></div>
+    <div class="ctrl-wrap" id="scenario-switch">
+      <label for="scenario-select">Scenario</label>
+      <select id="scenario-select">
+        <option value="portfolio_ppa.json">Portfolio PPA</option>
+        <option value="technology_ppa.json">Technology-Specific PPA</option>
+      </select>
+    </div>
     <button id="export-btn" onclick="window.print()">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
         <path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/>
@@ -1352,11 +1354,21 @@ footer::before {
 <!-- Dashboard -->
 <div id="dashboard" style="display:none">
 
-<!-- KPI Strip — Portfolio -->
+<!-- ══ IC DECISION SCORECARD ══════════════════════════════════
+     Traffic-light: pass / watch / fail per institutional dimension
+     ══════════════════════════════════════════════════════════════ -->
+<div id="ic-scorecard" style="background:var(--surface);border-bottom:1px solid var(--border);padding:10px 30px;display:flex;align-items:center;gap:0;overflow-x:auto">
+  <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-right:16px;white-space:nowrap">IC Scorecard</div>
+  <div id="scorecard-cells" style="display:flex;gap:6px;flex:1;min-width:0"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION A · RETURNS — 6 KPIs
+     ══════════════════════════════════════════════════ -->
 <div class="kpi-strip-header">
-  <div class="kpi-strip-header-label">★ Portfolio Metrics</div>
+  <div class="kpi-strip-header-label">A · Returns</div>
   <div class="kpi-strip-header-rule"></div>
-  <div class="kpi-strip-header-desc">All figures represent the combined portfolio — see charts below for per-technology comparison</div>
+  <div class="kpi-strip-header-desc">Equity performance metrics — from portfolio aggregate cashflow model</div>
 </div>
 <div class="kpi-strip" id="kpi-strip-main">
   <div class="kpi">
@@ -1365,45 +1377,66 @@ footer::before {
     <div class="kpi-delta" id="kpi-npv-sub">Net present value at WACC</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Portfolio IRR</div>
+    <div class="kpi-label">Equity IRR (Levered)</div>
     <div class="kpi-value" id="kpi-irr">—<sup>%</sup></div>
-    <div class="kpi-delta" id="kpi-irr-sub">Equity IRR vs WACC</div>
+    <div class="kpi-delta" id="kpi-irr-sub">vs WACC hurdle rate</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Simple Payback</div>
-    <div class="kpi-value" id="kpi-pb">—<sup>yr</sup></div>
-    <div class="kpi-delta neutral" id="kpi-pb-sub">Undiscounted recovery</div>
+    <div class="kpi-label">Project IRR (Unlevered)</div>
+    <div class="kpi-value" id="kpi-proj-irr">—<sup>%</sup></div>
+    <div class="kpi-delta" id="kpi-proj-irr-sub">Asset quality, no financing</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Avg DSCR</div>
-    <div class="kpi-value" id="kpi-dscra">—<sup>x</sup></div>
-    <div class="kpi-delta" id="kpi-dscra-sub">Debt coverage avg</div>
+    <div class="kpi-label">WACC (Hurdle Rate)</div>
+    <div class="kpi-value" id="kpi-wacc">—<sup>%</sup></div>
+    <div class="kpi-delta neutral" id="kpi-wacc-sub">Cost of capital</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Min DSCR</div>
-    <div class="kpi-value" id="kpi-dscrm">—<sup>x</sup></div>
-    <div class="kpi-delta" id="kpi-dscrm-sub">Lender covenant floor</div>
+    <div class="kpi-label">Equity Alpha (IRR − WACC)</div>
+    <div class="kpi-value" id="kpi-irr-spread">—<sup>pp</sup></div>
+    <div class="kpi-delta" id="kpi-irr-spread-sub">IRR premium above cost of capital</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Profitability Index (PI)</div>
+    <div class="kpi-value" id="kpi-pi">—</div>
+    <div class="kpi-delta" id="kpi-pi-sub">NPV / CAPEX — capital allocation rank</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION B · INVESTOR — 4 KPIs
+     ══════════════════════════════════════════════════ -->
+<div class="kpi-strip-header">
+  <div class="kpi-strip-header-label">B · Investor</div>
+  <div class="kpi-strip-header-rule"></div>
+  <div class="kpi-strip-header-desc">Equity investor view — cash multiple, capital deployed, payback</div>
+</div>
+<div class="kpi-strip" id="kpi-strip-investor">
+  <div class="kpi">
+    <div class="kpi-label">Equity Cash Multiple (MOIC)</div>
+    <div class="kpi-value" id="kpi-moic">—<sup>x</sup></div>
+    <div class="kpi-delta" id="kpi-moic-sub">Total cash returned / equity invested</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Total CAPEX</div>
     <div class="kpi-value" id="kpi-capex">—</div>
-    <div class="kpi-delta neutral" id="kpi-capex-sub">Overnight investment</div>
+    <div class="kpi-delta neutral" id="kpi-capex-sub">Overnight capital deployed</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Senior Debt</div>
+    <div class="kpi-label">Senior Secured Debt</div>
     <div class="kpi-value" id="kpi-debt">—</div>
-    <div class="kpi-delta neutral" id="kpi-debt-sub">Project finance</div>
+    <div class="kpi-delta neutral" id="kpi-debt-sub">Secured facility — ranking in insolvency</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">MOIC</div>
-    <div class="kpi-value" id="kpi-moic">—<sup>x</sup></div>
-    <div class="kpi-delta" id="kpi-moic-sub">Equity cash multiple</div>
+    <div class="kpi-label">Equity Payback Period (Disc.)</div>
+    <div class="kpi-value" id="kpi-dpb">—<sup>yr</sup></div>
+    <div class="kpi-delta" id="kpi-dpb-sub">Discounted at WACC — within asset life?</div>
   </div>
 </div>
 
 <!-- Executive Narrative -->
 <div class="sys-narrative">
-  <span class="nar-tag">Executive Summary</span>
+  <span class="nar-tag">Investment Thesis</span>
   <span id="sys-narrative-text">—</span>
 </div>
 
@@ -1412,53 +1445,50 @@ footer::before {
 
 <main>
 
-<!-- A — Valuation Overview -->
-<div class="section-divider" id="sec-A">A — Portfolio Valuation</div>
-<div class="section-narrative">The portfolio generates value when NPV is positive — every currency unit above zero represents return earned above the cost of capital. Technologies in red are value-destroying at the current PPA price and require renegotiation or removal. The CAPEX stack shows how the investment is financed: senior debt reduces equity exposure and amplifies returns, but increases covenant obligations.</div>
+<!-- A — Valuation -->
+<div class="section-divider" id="sec-A">A — Portfolio Valuation &amp; IRR Waterfall</div>
+<div class="section-narrative">NPV above zero confirms value created above the cost of capital. The IRR waterfall decomposes the asset return (Project IRR, unlevered) from the equity return (Equity IRR, levered) — the gap is the financing effect. A positive spread means debt amplifies equity returns above the hurdle rate. The Profitability Index (PI = NPV/CAPEX, Brealey-Myers standard) ranks technologies by value per unit of capital deployed — the primary metric for cross-project capital allocation.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('npvBar','npv_by_technology')">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg>
     </button>
     <div class="panel-title">Net Present Value by Technology</div>
-    <div class="panel-sub">NPV at WACC — green: value creation · red: value destruction</div>
+    <div class="panel-sub">NPV = PV(FCFE) − Equity at WACC · green = value creation · red = value destruction</div>
     <div class="chart-wrap" style="height:240px"><canvas id="npvBar"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
-    <button class="dl-btn" onclick="dlChart('capexStack','capex_financing')">
+    <button class="dl-btn" onclick="dlChart('irrWaterfall','irr_waterfall')">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg>
     </button>
-    <div class="panel-title">CAPEX Financing Structure</div>
-    <div class="panel-sub">Senior debt vs equity contribution at financial close</div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#4E9AF1"></div>Senior Debt</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#b8e836"></div>Equity</div>
-    </div>
-    <div class="chart-wrap" style="height:200px"><canvas id="capexStack"></canvas></div>
+    <div class="panel-title">IRR Waterfall — Asset vs Financing Effect</div>
+    <div class="panel-sub">Project IRR (unlevered) → financing uplift → Equity IRR (levered) vs WACC</div>
+    <div class="chart-wrap" style="height:240px"><canvas id="irrWaterfall"></canvas></div>
   </div>
 </div>
 
 <!-- B — Return Profile -->
-<div class="section-divider" id="sec-B">B — Return Profile</div>
-<div class="section-narrative">IRR above the WACC line confirms the investment creates equity value net of financing cost. Technologies below WACC are capital destroyers. The scorecard shows payback period — the number of years before cumulative free cash flow recovers the equity invested — and MOIC, the total cash multiple returned to equity holders over the asset life.</div>
+<div class="section-divider" id="sec-B">B — Investor Return Profile</div>
+<div class="section-narrative">Equity IRR above WACC confirms value creation after financing costs. The Equity Alpha (IRR − WACC) is the primary equity IC decision metric. The Profitability Index (PI = NPV/CAPEX) normalises returns against capital deployed, enabling cross-technology capital allocation ranking. MOIC is the gross cash-on-cash multiple to equity holders over the full asset life.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
-    <button class="dl-btn" onclick="dlChart('irrChart','irr_comparison')">
+    <button class="dl-btn" onclick="dlChart('irrChart','irr_vs_wacc')">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg>
     </button>
-    <div class="panel-title">IRR vs WACC</div>
+    <div class="panel-title">Equity IRR vs WACC · IRR Spread</div>
     <div class="panel-sub">Technologies above WACC dashed line create equity value — below destroys it</div>
     <div class="chart-wrap" style="height:250px"><canvas id="irrChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
-    <div class="panel-title">Investment KPI Scorecard</div>
-    <div class="panel-sub">Full per-technology and portfolio metrics at a glance</div>
+    <div class="panel-title">Extended Investment KPI Scorecard</div>
+    <div class="panel-sub">All return metrics per technology — equity IRR · project IRR · IRR spread · PI · MOIC · DSCR</div>
     <div style="overflow-x:auto">
       <table class="dt" id="kpi-table">
         <thead>
           <tr>
             <th>Technology</th><th>CAPEX</th><th>NPV</th>
-            <th>IRR</th><th>Payback</th><th>MOIC</th><th>DSCR</th>
+            <th>Eq. IRR</th><th>Proj. IRR</th><th>Spread</th>
+            <th>PI</th><th>MOIC</th><th>Min DSCR</th>
           </tr>
         </thead>
         <tbody id="kpi-tbody"></tbody>
@@ -1469,11 +1499,11 @@ footer::before {
 
 <!-- C — Cashflow & DSCR -->
 <div class="section-divider" id="sec-C">C — Annual Cashflow &amp; Debt Coverage</div>
-<div class="section-narrative">Free cash flow is what remains for equity holders after operating costs, tax, and all debt obligations are met. A DSCR below the covenant line (shown as a dashed threshold) indicates a year where the project cannot fully service its debt — a lender trigger event. Select any technology or the full portfolio to review the cashflow trajectory across the asset lifetime.</div>
+<div class="section-narrative">FCFE is what remains for equity holders after all operating costs, tax, and debt service. CFADS (Cash Flow Available for Debt Service) is the numerator of DSCR — the primary lender covenant metric. A DSCR below the covenant line signals a potential lender trigger event. FCFF (Free Cashflow to Firm) drives the unlevered Project IRR — shown as an overlay option.</div>
 <div class="grid-full">
   <div class="panel-wide" style="animation-delay:.1s">
     <div class="panel-controls">
-      <div class="panel-title">Annual Cashflow &amp; DSCR</div>
+      <div class="panel-title">Annual Cashflow &amp; Coverage</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">
         <div class="ctrl-wrap">
           <label for="ts-tech">Technology</label>
@@ -1485,18 +1515,19 @@ footer::before {
             <option value="dscr">DSCR</option>
             <option value="debt_balance">Debt Balance</option>
             <option value="debt_service">Debt Service</option>
+            <option value="cfads">CFADS</option>
+            <option value="fcff">FCFF (Unlevered FCF)</option>
             <option value="revenue">Revenue</option>
             <option value="ebitda">EBITDA</option>
-            <option value="cfads">CFADS</option>
           </select>
         </div>
       </div>
     </div>
     <div class="panel-sub">FCF bars · Cumulative FCF line · Selected overlay on secondary axis</div>
     <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#4E9AF1"></div>Free Cash Flow</div>
-      <div class="legend-item"><div class="legend-dot" style="background:rgba(184,232,54,.4)"></div>Cumulative FCF</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#FFD600;height:2px"></div>Overlay metric</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4E9AF1"></div>FCFE</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(184,232,54,.4)"></div>Cumulative FCFE</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FFD600;height:2px"></div>Overlay</div>
     </div>
     <div class="chart-wrap" style="height:280px"><canvas id="cfDscrChart"></canvas></div>
     <div class="insight-grid-4" id="cf-insights"></div>
@@ -1504,23 +1535,23 @@ footer::before {
 </div>
 
 <!-- D — Debt Service -->
-<div class="section-divider" id="sec-D">D — Debt Service Schedule</div>
-<div class="section-narrative">Senior debt is repaid over the loan tenor via annuity payments. The DSCR — the ratio of operating cash flow to total debt service — is the primary lender covenant. A minimum of 1.3x is standard for renewable energy project finance; anything below signals covenant breach risk and potential loan acceleration. Technologies shown in amber or red require immediate attention.</div>
+<div class="section-divider" id="sec-D">D — Debt Service &amp; Lender Metrics</div>
+<div class="section-narrative">Senior debt is repaid over the loan tenor via annuity payments (constant total payment, declining interest). The DSCR trough year is the lender's primary watch point — breach of the covenant floor triggers loan acceleration provisions. Debt/EBITDA at peak leverage measures gearing quality in the early years, aligned with S&amp;P project finance rating methodology (2014) — ≤6.0x is the generally accepted comfort threshold for renewables infrastructure lending.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('debtChart','debt_amortisation')">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg>
     </button>
     <div class="panel-title">Debt Amortisation Schedule</div>
-    <div class="panel-sub">Outstanding senior debt balance across asset lifetimes</div>
+    <div class="panel-sub">Outstanding senior debt balance — annuity method · trough DSCR callout</div>
     <div class="chart-wrap" style="height:240px"><canvas id="debtChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
-    <div class="panel-title">DSCR Assessment</div>
-    <div class="panel-sub">Average DSCR bars — green ≥ covenant · amber near · red below threshold</div>
+    <div class="panel-title">DSCR Assessment &amp; Covenant Status</div>
+    <div class="panel-sub">Avg DSCR bars · Min (Trough) DSCR · Debt/EBITDA Peak · Covenant pass/fail</div>
     <div id="dscr-bars" style="margin-top:8px"></div>
     <table class="dt" style="margin-top:16px">
-      <thead><tr><th>Technology</th><th>Avg DSCR</th><th>Min DSCR</th><th>Target</th></tr></thead>
+      <thead><tr><th>Technology</th><th>Avg DSCR</th><th>Min DSCR</th><th>Debt/EBITDA</th><th>Status</th></tr></thead>
       <tbody id="dscr-tbody"></tbody>
     </table>
   </div>
@@ -1528,11 +1559,11 @@ footer::before {
 
 <!-- E — Sensitivity -->
 <div class="section-divider" id="sec-E">E — Sensitivity Analysis</div>
-<div class="section-narrative">The tornado chart isolates which single variable most threatens NPV — the longest bar is the dominant risk to manage. PPA price and energy yield typically dominate; CAPEX overruns have a secondary but real impact. The P90 scenario stress-tests the portfolio against a 10% energy production shortfall — the industry standard for bankability due diligence.</div>
+<div class="section-narrative">The tornado chart isolates which single variable most threatens NPV under a one-at-a-time (OAT) ±20% shock — the longest bar is the dominant risk to manage. PPA price and energy yield typically dominate. The P90 scenario stress-tests at −10% energy production shortfall — the industry standard for bankability due diligence (P90 exceedance probability).</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <div class="panel-controls">
-      <div class="panel-title">Tornado — ΔNPV ±20%</div>
+      <div class="panel-title">Tornado — ΔNPV ±20% OAT</div>
       <div class="ctrl-wrap">
         <label for="torn-tech">Technology</label>
         <select id="torn-tech"></select>
@@ -1546,7 +1577,7 @@ footer::before {
       <svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg>
     </button>
     <div class="panel-title">P50 / P75 / P90 Scenarios</div>
-    <div class="panel-sub">NPV sensitivity to energy production exceedance across all technologies</div>
+    <div class="panel-sub">NPV sensitivity to energy production exceedance — P90 = −10% yield stress</div>
     <div class="chart-wrap" style="height:250px"><canvas id="scenarioChart"></canvas></div>
     <div class="insight-grid" id="scenario-insights" style="margin-top:14px"></div>
   </div>
@@ -1554,11 +1585,11 @@ footer::before {
 
 <!-- F — Monte Carlo -->
 <div class="section-divider" id="sec-F">F — Stochastic Risk Assessment</div>
-<div class="section-narrative">Monte Carlo simulates 5,000 joint scenarios — simultaneously varying energy yield, CAPEX, OPEX, PPA price, and discount rate within their uncertainty ranges. The probability of positive NPV is the headline bankability figure: above 90% is considered low-risk by project finance lenders. P10 is the downside case; P90 is the upside. The width of the distribution reflects overall investment risk.</div>
+<div class="section-narrative">Monte Carlo simulates 5,000 joint scenarios — simultaneously varying energy yield (σ=10%), CAPEX (σ=8%), OPEX (σ=7%), PPA price (σ=6%), and cost of equity (σ=0.5pp). P(Positive Return) is the headline bankability figure: ≥90% is considered low-risk by project finance lenders. P10 is the downside case; P90 is the upside. Distribution width reflects total investment risk.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <div class="panel-controls">
-      <div class="panel-title">Monte Carlo Distribution</div>
+      <div class="panel-title">Monte Carlo NPV Distribution</div>
       <div class="ctrl-wrap">
         <label for="mc-tech">Technology</label>
         <select id="mc-tech"></select>
@@ -1575,7 +1606,7 @@ footer::before {
         <thead>
           <tr>
             <th>Technology</th><th>P10 NPV</th><th>P50 NPV</th>
-            <th>P90 NPV</th><th>P(NPV&gt;0)</th><th>Risk</th>
+            <th>P90 NPV</th><th>P(Positive Return)</th><th>Risk</th>
           </tr>
         </thead>
         <tbody id="mc-tbody"></tbody>
@@ -1586,28 +1617,28 @@ footer::before {
 
 <!-- G — PPA Strategy -->
 <div class="section-divider" id="sec-G">G — PPA Pricing Strategy</div>
-<div class="section-narrative">LCOE is the minimum viable PPA price — the floor at which the project breaks even on a lifetime discounted basis. Every unit of PPA above LCOE is margin. Selling as a bundled wholesale portfolio offers the offtaker supply diversity and price stability, justifying a premium over individual technology pricing. Technologies where PPA falls below LCOE are loss-making and must be repriced before financial close.</div>
+<div class="section-narrative">LCOE is the minimum viable PPA — the floor at which the project breaks even on a lifetime discounted basis (IEA standard: LCOE = PV(CAPEX+OPEX+Fuel) / PV(Energy) at WACC). The Break-even PPA is the exact minimum PPA for NPV=0 (bisection root-find). LCOE Coverage Ratio = PPA/LCOE: ≥1.0x means the contracted price covers cost; every unit above is margin for equity holders.</div>
 <div class="grid-2">
   <div class="panel" style="animation-delay:.1s">
     <button class="dl-btn" onclick="dlChart('lcoeChart','ppa_vs_lcoe')">
       <svg width="12" height="12" viewBox="0 0 16 16" fill="#7a8a9e"><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2h-1.5v1.5h-9V11H2zm5.25-9.5v7.19L4.78 6.22 3.72 7.28 8 11.56l4.28-4.28-1.06-1.06-2.47 2.47V1.5H7.25z"/></svg>
     </button>
-    <div class="panel-title">PPA Price vs LCOE by Technology</div>
-    <div class="panel-sub">LCOE = cost floor (PV of costs / PV of energy). PPA above LCOE = margin. Portfolio LCOE line = cost benchmark from cashflow model (backend).</div>
+    <div class="panel-title">PPA Price vs LCOE vs NPV-Neutral PPA</div>
+    <div class="panel-sub">LCOE = cost floor · Break-even PPA = NPV=0 root · PPA above LCOE = margin</div>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:rgba(75,156,245,.85)"></div>LCOE (levelised cost)</div>
       <div class="legend-item"><div class="legend-dot" style="background:rgba(184,232,54,.55);border:1px solid rgba(184,232,54,.6)"></div>PPA Price (contracted)</div>
-      <div class="legend-item"><div class="legend-dot" style="background:rgba(245,196,0,.9)"></div>Portfolio LCOE</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(245,196,0,.9)"></div>NPV-Neutral PPA (break-even floor)</div>
     </div>
     <div class="chart-wrap" style="height:280px"><canvas id="lcoeChart"></canvas></div>
   </div>
   <div class="panel" style="animation-delay:.2s">
     <div class="panel-title">PPA Strategy Analysis</div>
-    <div class="panel-sub">Per-technology margin vs portfolio wholesale pricing — key metrics for PPA negotiation</div>
+    <div class="panel-sub">LCOE · PPA · Break-even PPA · LCOE Coverage Ratio per technology</div>
     <div class="insight-grid" id="lcoe-insights" style="margin-top:8px"></div>
     <div style="margin-top:18px">
       <table class="dt" id="ppa-table">
-        <thead><tr><th>Technology</th><th>LCOE</th><th>PPA Price</th><th>Margin</th><th>Cover</th></tr></thead>
+        <thead><tr><th>Technology</th><th>LCOE</th><th>Break-even PPA</th><th>PPA Price</th><th>Margin</th><th>LCOE Cover</th></tr></thead>
         <tbody id="ppa-tbody"></tbody>
       </table>
     </div>
@@ -1615,16 +1646,33 @@ footer::before {
   </div>
 </div>
 
-<!-- H — Bankability Assessment -->
+<!-- H — Bankability + Operational combined -->
 <div id="sec-bank" style="border-top:1px solid var(--border);margin-top:4px">
-  <div class="section-divider" style="border-top:none;margin-top:0">H — Bankability Assessment</div>
-  <div class="section-narrative">Senior lender metrics quantifying debt serviceability. LLCR ≥ 1.25x and PLCR ≥ 1.20x are the IFC/AIIB bankability thresholds for project finance. P(NPV&gt;0) measures portfolio resilience under joint uncertainty.</div>
+  <div class="section-divider" style="border-top:none;margin-top:0">H — Bankability &amp; Operational Performance</div>
+  <div class="section-narrative">Senior lender metrics: LLCR ≥ 1.25x and PLCR ≥ 1.20x are IFC/AIIB bankability thresholds. Debt/EBITDA Peak is the maximum gearing ratio within the debt tenor. Capacity Factor and Curtailment Rate are operational bankability inputs. CO₂ Abatement uses IPCC AR6 WG3 (2022) lifecycle emission factors — required for ESG-aligned capital (green bonds, DFI blended finance). Monte Carlo density is approximated from P10/P50/P90 percentiles via a Gaussian fit to the actual simulation distribution.</div>
+
+  <!-- C · Debt Service KPI Strip -->
   <div class="bank-header">
-    <span class="bank-header-label">🏦 Bankability Metrics</span>
+    <span class="bank-header-label">🏦 C · Debt Service</span>
     <span class="bank-header-rule"></span>
-    <span class="bank-header-desc">Senior lender &amp; project finance assessment</span>
+    <span class="bank-header-desc">IFC/World Bank lender metrics</span>
   </div>
   <div class="kpi-strip" id="kpi-strip-bank">
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Average Annual DSCR</div>
+      <div class="kpi-value" id="kpi-dscra">—<sup>x</sup></div>
+      <div class="kpi-delta neutral" id="kpi-dscra-sub">Avg across debt tenor</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Minimum DSCR (Trough)</div>
+      <div class="kpi-value" id="kpi-dscrm">—<sup>x</sup></div>
+      <div class="kpi-delta neutral" id="kpi-dscrm-sub">Worst-case year</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">DSCR Covenant: Pass / Watch / Fail</div>
+      <div class="kpi-value" id="kpi-dscr-pass">—</div>
+      <div class="kpi-delta neutral" id="kpi-dscr-pass-sub">Portfolio vs covenant</div>
+    </div>
     <div class="kpi bank-kpi">
       <div class="kpi-label">LLCR</div>
       <div class="kpi-value" id="kpi-llcr">—<sup>x</sup></div>
@@ -1636,34 +1684,82 @@ footer::before {
       <div class="kpi-delta neutral" id="kpi-plcr-sub">Project Life Coverage Ratio</div>
     </div>
     <div class="kpi bank-kpi">
-      <div class="kpi-label">Disc. Payback</div>
-      <div class="kpi-value" id="kpi-dpb">—<sup>yr</sup></div>
-      <div class="kpi-delta neutral" id="kpi-dpb-sub">Discounted recovery</div>
+      <div class="kpi-label">DSCR Covenant Headroom</div>
+      <div class="kpi-value" id="kpi-dscr-headroom">—<sup>x</sup></div>
+      <div class="kpi-delta neutral" id="kpi-dscr-headroom-sub">Min DSCR minus covenant floor</div>
     </div>
     <div class="kpi bank-kpi">
-      <div class="kpi-label">Portfolio LCOE</div>
+      <div class="kpi-label">Debt / EBITDA Peak</div>
+      <div class="kpi-value" id="kpi-debt-ebitda">—<sup>x</sup></div>
+      <div class="kpi-delta neutral" id="kpi-debt-ebitda-sub">Peak leverage · ≤6x comfort (S&amp;P PF)</div>
+    </div>
+  </div>
+
+  <!-- E · Pricing KPI Strip -->
+  <div class="bank-header" style="margin-top:12px">
+    <span class="bank-header-label">💡 E · Pricing</span>
+    <span class="bank-header-rule"></span>
+    <span class="bank-header-desc">PPA strategy &amp; LCOE metrics</span>
+  </div>
+  <div class="kpi-strip" id="kpi-strip-pricing">
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Levelised Cost of Energy</div>
       <div class="kpi-value" id="kpi-lcoe">—</div>
-      <div class="kpi-delta neutral" id="kpi-lcoe-sub">Portfolio levelised cost</div>
+      <div class="kpi-delta neutral" id="kpi-lcoe-sub">PV(costs)/PV(energy) at WACC</div>
     </div>
     <div class="kpi bank-kpi">
-      <div class="kpi-label">PPA / LCOE</div>
-      <div class="kpi-value" id="kpi-ppa-spread">—<sup>x</sup></div>
-      <div class="kpi-delta neutral" id="kpi-ppa-spread-sub">Revenue cover ratio</div>
-    </div>
-    <div class="kpi bank-kpi">
-      <div class="kpi-label">Portfolio PPA</div>
+      <div class="kpi-label">Portfolio PPA Price</div>
       <div class="kpi-value" id="kpi-ppa-wa">—</div>
-      <div class="kpi-delta neutral" id="kpi-ppa-wa-sub">Revenue-weighted PPA</div>
+      <div class="kpi-delta neutral" id="kpi-ppa-wa-sub">Revenue-weighted contracted PPA</div>
     </div>
     <div class="kpi bank-kpi">
-      <div class="kpi-label">P(NPV &gt; 0)</div>
+      <div class="kpi-label">LCOE Coverage Ratio</div>
+      <div class="kpi-value" id="kpi-ppa-spread">—<sup>x</sup></div>
+      <div class="kpi-delta neutral" id="kpi-ppa-spread-sub">PPA / LCOE — margin positive if ≥1x</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">NPV-Neutral PPA (Break-even Floor)</div>
+      <div class="kpi-value" id="kpi-beppa">—</div>
+      <div class="kpi-delta neutral" id="kpi-beppa-sub">Minimum PPA for NPV=0 (bisection)</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">PPA Margin of Safety</div>
+      <div class="kpi-value" id="kpi-ppa-mos">—<sup>%</sup></div>
+      <div class="kpi-delta neutral" id="kpi-ppa-mos-sub">(PPA − Break-even) / PPA</div>
+    </div>
+  </div>
+
+  <!-- F · Operations & ESG KPI Strip -->
+  <div class="bank-header" style="margin-top:12px">
+    <span class="bank-header-label">🌱 F · Operations &amp; ESG</span>
+    <span class="bank-header-rule"></span>
+    <span class="bank-header-desc">Asset performance · CO₂ avoided (IPCC AR6 WG3 2022)</span>
+  </div>
+  <div class="kpi-strip" id="kpi-strip-ops">
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Capacity Factor P50 (Year 1)</div>
+      <div class="kpi-value" id="kpi-cf">—<sup>%</sup></div>
+      <div class="kpi-delta neutral" id="kpi-cf-sub">Based on P50 energy yield assumption</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Curtailment Rate</div>
+      <div class="kpi-value" id="kpi-curt">—<sup>%</sup></div>
+      <div class="kpi-delta neutral" id="kpi-curt-sub">Curtailed / (Delivered + Curtailed)</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Probability of Positive NPV</div>
       <div class="kpi-value" id="kpi-prob">—<sup>%</sup></div>
-      <div class="kpi-delta neutral" id="kpi-prob-sub">Monte Carlo probability</div>
+      <div class="kpi-delta neutral" id="kpi-prob-sub">MC simulation · ≥90% = bankable</div>
     </div>
     <div class="kpi bank-kpi">
-      <div class="kpi-label">DSCR Status</div>
-      <div class="kpi-value" id="kpi-dscr-pass">—</div>
-      <div class="kpi-delta neutral" id="kpi-dscr-pass-sub">Portfolio DSCR vs covenant</div>
+      <div class="kpi-label">Annual CO₂ Abatement</div>
+      <div class="kpi-value" id="kpi-co2-ann">—</div>
+      <div class="kpi-delta neutral" id="kpi-co2-ann-sub">tCO₂e/yr vs grid (IPCC AR6 WG3 2022)</div>
+    </div>
+    <div class="kpi bank-kpi">
+      <div class="kpi-label">Lifetime CO₂ Abatement</div>
+      <div class="kpi-value" id="kpi-co2-life">—</div>
+      <div class="kpi-delta neutral" id="kpi-co2-life-sub">Total tCO₂e over full asset life</div>
     </div>
   </div>
 </div>
@@ -1673,7 +1769,7 @@ footer::before {
 
 <div class="kbd-hint" id="kbd-hint">Press <kbd>1</kbd>–<kbd>8</kbd> to navigate sections</div>
 
-<!-- Footer -->
+<!-- Footer — preserved exactly -->
 <footer>
   <div>
     <div class="footer-author-name">Agus Samsudin</div>
@@ -1700,10 +1796,10 @@ footer::before {
   <div class="footer-center">
     <div class="footer-built-with">Built with <strong>Python</strong> · <strong>numpy-financial</strong> · <strong>Chart.js</strong></div>
     <div class="footer-tags">
-      <div class="tech-tag">PyPSA</div>
       <div class="tech-tag">numpy-financial</div>
-      <div class="tech-tag">scipy</div>
-      <div class="tech-tag">openpyxl</div>
+      <div class="tech-tag">IPCC AR6 WG3</div>
+      <div class="tech-tag">World Bank PPP</div>
+      <div class="tech-tag">IEA LCOE</div>
       <div class="tech-tag">Chart.js</div>
       <div class="tech-tag">Python</div>
     </div>
@@ -1711,1484 +1807,619 @@ footer::before {
   <div style="text-align:right;flex-shrink:0">
     <div class="footer-project-name" id="footer-project">—</div>
     <div class="footer-project-role" id="footer-subtitle">Investment &amp; Asset Management</div>
-    <div class="footer-project-desc" id="footer-desc">Economic valuation · NPV · IRR · DSCR · LLCR · PLCR · LCOE · PPA Strategy · Monte Carlo</div>
+    <div class="footer-project-desc" id="footer-desc">NPV · Equity Alpha · PI · DSCR Headroom · LLCR · PLCR · LCOE · PPA Margin of Safety · CO₂ Abatement · Monte Carlo</div>
   </div>
 </footer>
-
 <script>
 "use strict";
 
 /* ─── Chart.js Defaults ──────────────────────────────────────────────── */
-
 Chart.defaults.color       = '#7a8a9e';
 Chart.defaults.borderColor = '#1e2a3a';
 Chart.defaults.font.family = "'DM Mono', monospace";
 Chart.defaults.font.size   = 10;
 
 /* ─── Utilities ──────────────────────────────────────────────────────── */
-
-const $ = id => {
-  const el = document.getElementById(id);
-  if (!el) console.warn('Missing element:', id);
-  return el;
-};
-
-const TT = {
-  backgroundColor: 'rgba(6,10,20,.95)',
-  titleColor:      '#e8f0fa',
-  bodyColor:       '#8a9ab4',
-  borderColor:     '#182030',
-  borderWidth:     1,
-  padding:         14,
-  cornerRadius:    6,
-  boxPadding:      5,
-};
-
-const KNOWN_COLORS = {
-  Solar:         '#f5c400',
-  Wind:          '#3B82F6',
-  Hydro:         '#06B6D4',
-  Geothermal:    '#F97316',
-  Biomass:       '#22C55E',
-  Biogas:        '#A3E635',
-  WTE:           '#EC4899',
-  PHS:           '#A855F7',
-  BESS:          '#34D399',
-  Hydrogen:      '#38BDF8',
-  'Natural Gas': '#94A3B8',
-  Biodiesel:     '#D97706',
-  Grid:          '#64748B',
-};
-
+const $ = id => { const el = document.getElementById(id); if (!el) console.warn('Missing element:', id); return el; };
+const TT = { backgroundColor:'rgba(6,10,20,.95)', titleColor:'#e8f0fa', bodyColor:'#8a9ab4', borderColor:'#182030', borderWidth:1, padding:14, cornerRadius:6, boxPadding:5 };
+const KNOWN_COLORS = { Solar:'#f5c400', Wind:'#3B82F6', Hydro:'#06B6D4', Geothermal:'#F97316', Biomass:'#22C55E', Biogas:'#A3E635', WTE:'#EC4899', PHS:'#A855F7', BESS:'#34D399', Hydrogen:'#38BDF8', 'Natural Gas':'#94A3B8', Biodiesel:'#D97706', Grid:'#64748B' };
 const FALLBACK_COLORS = ['#F472B6','#86EFAC','#67E8F9','#FDE68A','#818CF8','#C4B5FD','#5EEAD4','#FCA5A5'];
 let _fallbackIndex = 0;
-
-function tc(name) {
-  if (!KNOWN_COLORS[name]) KNOWN_COLORS[name] = FALLBACK_COLORS[_fallbackIndex++ % FALLBACK_COLORS.length];
-  return KNOWN_COLORS[name];
-}
-
-/* ─── Chart Registry ─────────────────────────────────────────────────── */
+function tc(name) { if (!KNOWN_COLORS[name]) KNOWN_COLORS[name] = FALLBACK_COLORS[_fallbackIndex++ % FALLBACK_COLORS.length]; return KNOWN_COLORS[name]; }
 
 const _charts = {};
-
-function mk(id, cfg) {
-  if (_charts[id]) _charts[id].destroy();
-  const ctx = $(id)?.getContext('2d');
-  if (!ctx) return null;
-  _charts[id] = new Chart(ctx, cfg);
-  return _charts[id];
-}
-
-function dlChart(id, filename) {
-  const chart = _charts[id];
-  if (!chart) return;
-  const a = document.createElement('a');
-  a.href     = chart.toBase64Image('image/png', 1);
-  a.download = (filename || id) + '.png';
-  a.click();
-}
+function mk(id, cfg) { if (_charts[id]) _charts[id].destroy(); const ctx = $(id)?.getContext('2d'); if (!ctx) return null; _charts[id] = new Chart(ctx, cfg); return _charts[id]; }
+function dlChart(id, filename) { const c = _charts[id]; if (!c) return; const a = document.createElement('a'); a.href = c.toBase64Image('image/png',1); a.download = (filename||id)+'.png'; a.click(); }
 
 /* ─── Formatters ─────────────────────────────────────────────────────── */
-
 let CURRENT_CURRENCY = '';
-
-function H(v, decimals = 1, suffix = '', withCurrency = false) {
-  if (v == null || isNaN(+v)) return '—';
-  const n = +v, abs = Math.abs(n);
-  let val = n, unit = '';
-  if      (abs >= 1e9) { val = n / 1e9; unit = 'B'; }
-  else if (abs >= 1e6) { val = n / 1e6; unit = 'M'; }
-  else if (abs >= 1e3) { val = n / 1e3; unit = 'k'; }
-  const factor  = Math.pow(10, decimals);
-  const rounded = Math.round(val * factor) / factor;
-  const str     = Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(decimals).replace(/\.0+$/, '');
-  const prefix  = withCurrency && CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  return prefix + str + (unit ? ' ' + unit : '') + (suffix ? ' ' + suffix : '');
+function H(v, decimals=1) {
+  if (v==null||isNaN(+v)) return '—';
+  const n=+v, abs=Math.abs(n); let val=n,unit='';
+  if (abs>=1e9){val=n/1e9;unit='B';} else if (abs>=1e6){val=n/1e6;unit='M';} else if (abs>=1e3){val=n/1e3;unit='k';}
+  const f=Math.pow(10,decimals), r=Math.round(val*f)/f;
+  const s=Number.isInteger(r)?String(r):r.toFixed(decimals).replace(/\.0+$/,'');
+  return s+(unit?' '+unit:'');
 }
-
-function Hc(v, decimals = 1) {
-  const c = CURRENT_CURRENCY || '';
-  return H(v, decimals) + (c ? `<sup style="font-size:10px;font-weight:400;color:var(--muted);letter-spacing:.06em;margin-left:4px">${c}</sup>` : '');
-}
-
-function P(v, decimals = 1) {
-  return v == null ? '—' : (+v * 100).toFixed(decimals) + '%';
-}
-
-function X(v) {
-  return v == null || isNaN(+v) ? '—' : (+v).toFixed(2) + 'x';
-}
+function Hc(v,d=1){const c=CURRENT_CURRENCY||'';return H(v,d)+(c?`<sup style="font-size:10px;font-weight:400;color:var(--muted);letter-spacing:.06em;margin-left:4px">${c}</sup>`:'');}
+function P(v,d=1){return v==null?'—':((+v)*100).toFixed(d)+'%';}
+function X(v){return v==null||isNaN(+v)?'—':(+v).toFixed(2)+'x';}
+function Pp(v,d=1){return v==null||isNaN(+v)?'—':((+v)*100>=0?'+':'')+((+v)*100).toFixed(d)+'pp';}
+function Pct(v,d=1){return v==null||isNaN(+v)?'—':((+v)*100).toFixed(d)+'%';}
 
 /* ─── State ──────────────────────────────────────────────────────────── */
+let DATA=null, TECHS=[], PARAMS={}, PORT_KEY=null, _firstLoad=true;
 
-let DATA        = null;
-let TECHS       = [];
-let PARAMS      = {};
-let PORT_KEY    = null;
-let _firstLoad  = true;
-let currentDataFile = 'portfolio_ppa.json';
-
-/* ─── Portfolio Key Detection ────────────────────────────────────────── */
-
-function detectPortfolioKey(technologies) {
-  const keys = Object.keys(technologies || {});
-  return (
-    keys.find(k => ['_portfolio', 'Portfolio blended', 'Portfolio', 'Portofolio', '_system'].includes(k)) ||
-    keys.find(k => /^portfolio(?:\b|[_\s-])/i.test(k)) ||
-    keys.find(k => /^_portfolio$/i.test(k)) ||
-    null
-  );
+function detectPortfolioKey(t) {
+  const k=Object.keys(t||{});
+  return k.find(k=>['_portfolio','Portfolio blended','Portfolio','_system'].includes(k))||k.find(k=>/^_portfolio$/i.test(k))||null;
 }
 
-/* ─── Load Error Screen ──────────────────────────────────────────────── */
-
-function showLoadError(file, errMsg) {
-  const el = $('loading');
-  if (!el) return;
-  el.style.display = 'flex';
-  el.classList.remove('hidden');
-  el.innerHTML = `
-    <div style="text-align:center;padding:48px 40px;max-width:520px">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#f85149;margin-bottom:20px;opacity:.85">Data Source Unavailable</div>
-      <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:#e8f0fa;line-height:1.2;margin-bottom:18px">Could not fetch<br><em style="color:#4b9cf5;font-weight:300">${file}</em></div>
-      <div style="font-size:11.5px;color:#6b7d94;line-height:2;margin-bottom:24px">
-        Run the notebook first to generate <code style="color:#b8e836;background:#0d1520;padding:1px 7px;border-radius:3px;font-size:10px">economic_valuation.json</code>,<br>
-        then serve this dashboard from the same directory:
-      </div>
-      <div style="background:#0d1520;border:1px solid #182030;border-radius:6px;padding:14px 20px;margin-bottom:10px;text-align:left">
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#4b9cf5;margin-bottom:6px;letter-spacing:.1em">TERMINAL</div>
-        <code style="font-family:'DM Mono',monospace;font-size:12px;color:#b8e836">python -m http.server 8000</code>
-      </div>
-      <div style="font-size:11px;color:#3a4a5a;font-family:'DM Mono',monospace;margin-top:8px">
-        Then open <code style="color:#6b7d94">http://localhost:8000</code> in your browser
-      </div>
-      ${errMsg ? `<div style="margin-top:16px;font-size:9px;color:#2a3a4a;font-family:'DM Mono',monospace;letter-spacing:.04em">${errMsg}</div>` : ''}
-    </div>`;
-  _firstLoad = false;
+/* ─── Error / Toast / Loading ─────────────────────────────────────────── */
+function showLoadError(file,errMsg) {
+  const el=$('loading'); if(!el)return;
+  el.style.display='flex'; el.classList.remove('hidden');
+  el.innerHTML=`<div style="text-align:center;padding:48px 40px;max-width:520px">
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#f85149;margin-bottom:20px">Data Source Unavailable</div>
+    <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:#e8f0fa;line-height:1.2;margin-bottom:18px">Could not fetch<br><em style="color:#4b9cf5;font-weight:300">${file}</em></div>
+    <div style="font-size:11.5px;color:#6b7d94;line-height:2;margin-bottom:24px">Run the notebook first, then serve:<br><code style="color:#b8e836;background:#0d1520;padding:2px 8px;border-radius:3px">python -m http.server 8000</code></div>
+    ${errMsg?`<div style="font-size:9px;color:#2a3a4a;font-family:'DM Mono',monospace">${errMsg}</div>`:''}
+  </div>`; _firstLoad=false;
 }
-
-/* ─── Toast ──────────────────────────────────────────────────────────── */
-
-function toast(msg, isError = false) {
-  const el = $('status-toast');
-  el.textContent       = msg;
-  el.style.borderColor = isError ? '#f85149' : 'var(--accent)';
-  el.style.color       = isError ? '#f85149' : 'var(--accent)';
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3500);
-}
-
-/* ─── Loading Overlay ────────────────────────────────────────────────── */
-
-function hideLoading() {
-  const el = $('loading');
-  if (!el) return;
-  el.classList.add('hidden');
-  setTimeout(() => el?.remove(), 600);
-}
-
-/* ─── Data Fetch ─────────────────────────────────────────────────────── */
+function toast(msg,isErr=false){const el=$('status-toast');el.textContent=msg;el.style.borderColor=isErr?'#f85149':'var(--accent)';el.style.color=isErr?'#f85149':'var(--accent)';el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+function hideLoading(){const el=$('loading');if(!el)return;el.classList.add('hidden');setTimeout(()=>el?.remove(),600);}
 
 function loadJSON(file) {
-  if (location.protocol === 'file:') {
-    showLoadError(file, '(file:// protocol — serve with: python -m http.server 8000)');
-    return;
-  }
-  fetch(file + '?v=' + Date.now())
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + file);
-      return r.json();
-    })
-    .then(data => {
-      _firstLoad = false;
-      hideLoading();
-      initDashboard(data);
-    })
-    .catch(err => {
-      if (_firstLoad) {
-        showLoadError(file, err.message);
-      } else {
-        const el = document.createElement('div');
-        el.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a0a0a;border:1px solid #f85149;color:#f85149;font-family:DM Mono,monospace;font-size:11px;padding:12px 18px;border-radius:8px;z-index:900;max-width:340px;letter-spacing:.04em';
-        el.textContent   = '⚠ ' + err.message;
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 5000);
-      }
-    });
+  if (location.protocol==='file:'){showLoadError(file,'file:// protocol — use: python -m http.server 8000');return;}
+  fetch(file+'?v='+Date.now())
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status+' — '+file);return r.json();})
+    .then(data=>{_firstLoad=false;hideLoading();initDashboard(data);})
+    .catch(err=>{if(_firstLoad){showLoadError(file,err.message);}else{const el=document.createElement('div');el.style.cssText='position:fixed;bottom:24px;right:24px;background:#1a0a0a;border:1px solid #f85149;color:#f85149;font-family:DM Mono,monospace;font-size:11px;padding:12px 18px;border-radius:8px;z-index:900';el.textContent='⚠ '+err.message;document.body.appendChild(el);setTimeout(()=>el.remove(),5000);}});
 }
+let currentDataFile='portfolio_ppa.json';
 
-async function loadDashboardData(file) {
-  const loadingText = $('loading-text');
-  const loadingEl   = $('loading');
-  if (!_firstLoad && loadingEl) {
-    loadingEl.classList.remove('hidden');
-    loadingEl.style.display = 'flex';
-  }
-  if (loadingText) loadingText.innerText = `Fetching ${file}…`;
-  loadJSON(file);
-}
+async function loadDashboardData(file){const lt=$('loading-text'),le=$('loading');if(!_firstLoad&&le){le.classList.remove('hidden');le.style.display='flex';}if(lt)lt.innerText=`Fetching ${file}…`;loadJSON(file);}
 
-/* ─── Scenario Selector ──────────────────────────────────────────────── */
-
-document.getElementById('scenario-select').addEventListener('change', e => {
-  currentDataFile = e.target.value;
-  loadDashboardData(currentDataFile);
-});
-
-/* ─── Dashboard Initialisation ───────────────────────────────────────── */
-
+/* ─── Init ───────────────────────────────────────────────────────────── */
 function initDashboard(d) {
-  DATA     = d;
-  PARAMS   = d.parameters || {};
-  PORT_KEY = detectPortfolioKey(d.technologies || {});
-  TECHS    = Object.keys(d.technologies || {}).filter(n => n !== PORT_KEY && !/^portfolio(?:\b|[_\s-])/i.test(n));
+  DATA=d; PARAMS=d.parameters||{}; PORT_KEY=detectPortfolioKey(d.technologies||{});
+  TECHS=Object.keys(d.technologies||{}).filter(n=>n!==PORT_KEY&&!/^portfolio(?:\b|[_\s-])/i.test(n));
+  $('dashboard').style.display=''; hideLoading();
+  const meta=d.meta||{}, geo=d.geographic||{};
+  CURRENT_CURRENCY=meta.currency||'';
 
-  $('dashboard').style.display = '';
-  hideLoading();
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wacc=((1-dr)*ke+dr*kd*(1-tr))||PARAMS.wacc||0;
+  const port=DATA.technologies[PORT_KEY]||{};
+  const irr_sp=port.irr_spread;
 
-  const meta = d.meta      || {};
-  const geo  = d.geographic || {};
+  $('pill-wacc').textContent=wacc?P(wacc,2):'—';
+  $('pill-irr-spread').textContent=irr_sp!=null?Pp(irr_sp,1):'—';
+  $('pill-inflation').textContent=PARAMS.inflation!=null?P(PARAMS.inflation,1):'—';
+  $('pill-debt').textContent=PARAMS.debt_ratio!=null?P(PARAMS.debt_ratio,0):'—';
+  $('pill-tax').textContent=PARAMS.tax_rate!=null?P(PARAMS.tax_rate,0):'—';
+  $('pill-debtrate').textContent=PARAMS.cost_of_debt!=null?P(PARAMS.cost_of_debt,1):'—';
+  $('pill-tenor').textContent=PARAMS.debt_tenor!=null?PARAMS.debt_tenor+'yr':'—';
+  $('pill-dscrtgt').textContent=PARAMS.dscr_target!=null?PARAMS.dscr_target.toFixed(2)+'x':'—';
+  $('pill-date').textContent=d.generated||'—';
+  $('pill-techs').textContent=TECHS.length;
+  $('pill-currency').textContent=CURRENT_CURRENCY||'—';
 
-  CURRENT_CURRENCY = meta.currency || meta.cur || '';
+  const pn=meta.systemName||geo.name||'Energy Project';
+  const pl=meta.project||'Economic Dashboard';
+  const pw=pl.trim().split(/\s+/);
+  $('project-name').textContent=pn;
+  $('project-dashboard-label').textContent=pw.slice(0,-1).join(' ')||pw[0];
+  $('project-type-label').textContent=pw.length>1?pw[pw.length-1]:'';
+  document.title=`${pn} — ${pl}`;
+  $('header-tag').textContent=`${pn} · ${pl}`;
+  $('footer-project').textContent=pn+(meta.project?' — '+meta.project:'');
+  $('footer-subtitle').textContent=meta.subtitle||'Investment & Asset Management';
+  const descEl=$('project-description');
+  if(descEl&&meta.project_description){descEl.textContent='Project Description: '+meta.project_description;descEl.style.display='';}
+  $('footer-desc').textContent=meta.description||'NPV · Equity Alpha · PI · DSCR Headroom · LLCR · PLCR · LCOE · PPA Margin of Safety · CO₂ Abatement · Monte Carlo';
 
-  const wacc = PARAMS.cost_of_equity != null
-    ? (1 - (PARAMS.debt_ratio || 0)) * PARAMS.cost_of_equity + (PARAMS.debt_ratio || 0) * (PARAMS.cost_of_debt || 0) * (1 - (PARAMS.tax_rate || 0))
-    : (PARAMS.wacc || 0);
-
-  $('pill-wacc').textContent     = wacc ? P(wacc, 2) : '—';
-  $('pill-inflation').textContent = PARAMS.inflation    != null ? P(PARAMS.inflation, 1)    : '—';
-  $('pill-debt').textContent      = PARAMS.debt_ratio   != null ? P(PARAMS.debt_ratio, 0)   : '—';
-  $('pill-tax').textContent       = PARAMS.tax_rate     != null ? P(PARAMS.tax_rate, 0)     : '—';
-  $('pill-debtrate').textContent  = PARAMS.cost_of_debt != null ? P(PARAMS.cost_of_debt, 1) : (PARAMS.debt_rate != null ? P(PARAMS.debt_rate, 1) : '—');
-  $('pill-tenor').textContent     = PARAMS.debt_tenor   != null ? PARAMS.debt_tenor + 'yr'  : '—';
-  $('pill-dscrtgt').textContent   = PARAMS.dscr_target  != null ? PARAMS.dscr_target.toFixed(2) + 'x' : '—';
-  $('pill-date').textContent      = d.generated || '—';
-  $('pill-techs').textContent     = TECHS.length;
-  $('pill-currency').textContent  = CURRENT_CURRENCY || '—';
-
-  const projectName  = meta.systemName || geo.name || meta.name || 'Energy Project';
-  const projectLabel = meta.project || 'Economic Dashboard';
-  const labelWords   = projectLabel.trim().split(/\s+/);
-  const labelItalic  = labelWords.slice(0, -1).join(' ') || labelWords[0];
-  const labelPlain   = labelWords.length > 1 ? labelWords[labelWords.length - 1] : '';
-
-  $('project-name').textContent            = projectName;
-  $('project-dashboard-label').textContent = labelItalic;
-  $('project-type-label').textContent      = labelPlain;
-  document.title = `${projectName} — ${projectLabel}`;
-
-  const unitE    = meta.unit_energy || '';
-  const unitP    = meta.unit_power  || '';
-  const unitHint = (unitE || unitP) ? ` · ${[unitE, unitP].filter(Boolean).join(' / ')}` : '';
-  $('header-tag').textContent = `${projectName} · ${projectLabel}${unitHint}`;
-
-  const unitPill = $('pill-units-wrap');
-  if (unitE || unitP) {
-    $('pill-units').textContent = [unitE, unitP].filter(Boolean).join(' / ');
-    if (unitPill) unitPill.style.display = '';
-  }
-
-  $('footer-project').textContent  = projectName + (meta.project ? ' — ' + meta.project : '');
-  $('footer-subtitle').textContent = meta.subtitle || 'Investment & Asset Management';
-
-  const descEl = $('project-description');
-  if (descEl && meta.project_description) {
-    descEl.textContent = 'Project Description: ' + meta.project_description;
-    descEl.style.display = '';
-  }
-
-  $('footer-desc').textContent = meta.description
-    || `Economic valuation · NPV · IRR · DSCR · LLCR · PLCR · LCOE · PPA Strategy · Monte Carlo${unitE ? ' · ' + unitE : ''}`;
-
-  ['ts-tech', 'torn-tech', 'mc-tech'].forEach(id => {
-    const sel = $(id);
-    sel.innerHTML = '';
-    if (PORT_KEY) {
-      const o = document.createElement('option');
-      o.value = PORT_KEY;
-      o.textContent = '★ Portfolio';
-      sel.appendChild(o);
-    }
-    TECHS.forEach(n => {
-      const o = document.createElement('option');
-      o.value = n;
-      o.textContent = n;
-      sel.appendChild(o);
-    });
-    if (sel.options.length > 0) sel.value = sel.options[0].value;
+  ['ts-tech','torn-tech','mc-tech'].forEach(id=>{
+    const sel=$(id); sel.innerHTML='';
+    if(PORT_KEY){const o=document.createElement('option');o.value=PORT_KEY;o.textContent='★ Portfolio';sel.appendChild(o);}
+    TECHS.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+    if(sel.options.length>0)sel.value=sel.options[0].value;
   });
 
-  $('ts-tech').addEventListener('change', renderCF);
-  $('ts-metric').addEventListener('change', renderCF);
-  $('torn-tech').addEventListener('change', renderTornado);
-  $('mc-tech').addEventListener('change', renderMC);
+  $('ts-tech').addEventListener('change',renderCF);
+  $('ts-metric').addEventListener('change',renderCF);
+  $('torn-tech').addEventListener('change',renderTornado);
+  $('mc-tech').addEventListener('change',renderMC);
 
-  initGeoMap(d.geographic || {});
-
-  renderKPIs();
-  renderNarrative();
-  renderInsights();
-  renderNPVBar();
-  renderCapexStack();
-  renderIRR();
-  renderKPITable();
-  renderCF();
-  renderTornado();
-  renderMC();
-  renderCFInsights();
-  renderDebt();
-  renderDSCR();
-  renderScenario();
-  renderScenarioInsights();
-  renderMCTable();
-  renderLCOE();
-  buildNav();
-  buildReveal();
-  buildKbd();
-
-  console.log('Dashboard initialised — project:', meta?.systemName, '— technologies:', TECHS.length);
-
-  const port = DATA.technologies[PORT_KEY] || {};
-  if (port.llcr  != null && port.avg_dscr != null && port.llcr < port.avg_dscr)
-    console.warn('Bankability discounting inconsistency: LLCR <', port.llcr?.toFixed(2), '< avg_DSCR', port.avg_dscr?.toFixed(2));
-  if (port.llcr  != null && port.llcr < 1.25)
-    console.warn('Portfolio LLCR', port.llcr?.toFixed(2), '< 1.25x IFC minimum');
-  if (port.plcr  != null && port.plcr < 1.20)
-    console.warn('Portfolio PLCR', port.plcr?.toFixed(2), '< 1.20x comfort level');
-  if (port.min_dscr != null && port.min_dscr < (PARAMS.dscr_target || 1.3))
-    console.warn('Portfolio min_DSCR', port.min_dscr?.toFixed(2), 'breaches covenant', PARAMS.dscr_target);
-  if (!PORT_KEY)
-    console.warn('No portfolio row detected in JSON — bankability KPIs may be missing');
-  if (!d.geographic?.latitude)
-    console.info('No geographic coordinates in JSON — map hidden');
-  if (!port.llcr)
-    console.warn('Portfolio LLCR missing — check cashflow_engine.py output');
-  if (!port.plcr)
-    console.warn('Portfolio PLCR missing — check cashflow_engine.py output');
-  if (!port.sensitivity)
-    console.warn('Portfolio sensitivity missing from JSON — MC section will show —');
+  initGeoMap(geo);
+  renderKPIs(); renderNarrative(); renderInsights(); renderScorecard();
+  renderNPVBar(); renderIRRWaterfall(); renderIRR(); renderKPITable();
+  renderCF(); renderTornado(); renderMC(); renderCFInsights();
+  renderDebt(); renderDSCR(); renderScenario(); renderScenarioInsights();
+  renderMCTable(); renderLCOE(); buildNav(); buildReveal(); buildKbd();
 }
 
 /* ─── Geo Map ────────────────────────────────────────────────────────── */
-
-let _geoMap    = null;
-let _geoMarker = null;
-
+let _geoMap=null, _geoMarker=null;
 function initGeoMap(geo) {
-  if (!geo) {
-    console.warn('No geographic data found in JSON — map hidden');
-    $('header-map-wrap')?.classList.add('hidden');
-    return;
-  }
-
-  let lat = parseFloat(geo.latitude ?? geo.Latitude ?? NaN);
-  let lon = parseFloat(geo.longitude ?? geo.Longitude ?? NaN);
-
-  if ((isNaN(lat) || isNaN(lon)) && Array.isArray(geo.assets) && geo.assets.length > 0) {
-    const first = geo.assets[0];
-    lat = parseFloat(first.latitude);
-    lon = parseFloat(first.longitude);
-  }
-
-  if (isNaN(lat) || isNaN(lon)) {
-    console.warn('No geographic coordinates found — map hidden');
-    $('header-map-wrap')?.classList.add('hidden');
-    return;
-  }
-
+  if(!geo){$('header-map-wrap')?.classList.add('hidden');return;}
+  let lat=parseFloat(geo.latitude??geo.Latitude??NaN), lon=parseFloat(geo.longitude??geo.Longitude??NaN);
+  if((isNaN(lat)||isNaN(lon))&&Array.isArray(geo.assets)&&geo.assets.length>0){lat=parseFloat(geo.assets[0].latitude);lon=parseFloat(geo.assets[0].longitude);}
+  if(isNaN(lat)||isNaN(lon)){$('header-map-wrap')?.classList.add('hidden');return;}
   $('header-map-wrap')?.classList.remove('hidden');
-
-  if (!_geoMap) {
-    _geoMap = L.map('geo-map', {
-      zoomControl:       false,
-      attributionControl: false,
-      dragging:          false,
-      scrollWheelZoom:   false,
-      doubleClickZoom:   false,
-      boxZoom:           false,
-      keyboard:          false,
-    });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 13 }).addTo(_geoMap);
-
-    if (Array.isArray(geo.assets) && geo.assets.length > 0) {
-      geo.assets.forEach(a => {
-        const aLat = parseFloat(a.latitude);
-        const aLon = parseFloat(a.longitude);
-        if (!isNaN(aLat) && !isNaN(aLon)) {
-          L.circleMarker([aLat, aLon], { radius: 7, color: '#b8e836', fillColor: '#b8e836', fillOpacity: .85, weight: 2 })
-           .bindTooltip(a.name || '', { direction: 'top', className: 'leaflet-tooltip' })
-           .addTo(_geoMap);
-        }
-      });
-    } else {
-      _geoMarker = L.circleMarker([lat, lon], { radius: 8, color: '#b8e836', fillColor: '#b8e836', fillOpacity: .9, weight: 2 }).addTo(_geoMap);
-    }
-    _geoMap.setView([lat, lon], 9);
-  } else {
-    if (_geoMarker) _geoMarker.setLatLng([lat, lon]);
-    _geoMap.setView([lat, lon], 9);
-    setTimeout(() => _geoMap.invalidateSize(), 50);
-  }
+  if(!_geoMap){
+    _geoMap=L.map('geo-map',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:13}).addTo(_geoMap);
+    if(Array.isArray(geo.assets)&&geo.assets.length>0){geo.assets.forEach(a=>{const al=parseFloat(a.latitude),ao=parseFloat(a.longitude);if(!isNaN(al)&&!isNaN(ao)){L.circleMarker([al,ao],{radius:7,color:'#b8e836',fillColor:'#b8e836',fillOpacity:.85,weight:2}).bindTooltip(a.name||'',{direction:'top',className:'leaflet-tooltip'}).addTo(_geoMap);}});}
+    else{_geoMarker=L.circleMarker([lat,lon],{radius:8,color:'#b8e836',fillColor:'#b8e836',fillOpacity:.9,weight:2}).addTo(_geoMap);}
+    _geoMap.setView([lat,lon],9);
+  }else{if(_geoMarker)_geoMarker.setLatLng([lat,lon]);_geoMap.setView([lat,lon],9);setTimeout(()=>_geoMap.invalidateSize(),50);}
 }
 
-/* ─── KPI Strip ──────────────────────────────────────────────────────── */
-
+/* ─── KPI Strips ─────────────────────────────────────────────────────── */
 function renderKPIs() {
-  const p  = DATA.technologies[PORT_KEY] || {};
-  const ke = PARAMS.cost_of_equity || 0;
-  const kd = PARAMS.cost_of_debt   || 0;
-  const dr = PARAMS.debt_ratio     || 0;
-  const tr = PARAMS.tax_rate       || 0;
-  const wc = ((1 - dr) * ke + dr * kd * (1 - tr)) || PARAMS.wacc || .08;
-  const dt = PARAMS.dscr_target || 1.3;
-  const cur = CURRENT_CURRENCY || '';
+  const p=DATA.technologies[PORT_KEY]||{};
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wc=((1-dr)*ke+dr*kd*(1-tr))||PARAMS.wacc||.08;
+  const dt=PARAMS.dscr_target||1.3;
 
-  const set = (id, html, cls, sub, subCls) => {
-    const el = $(id);
-    if (!el) return;
-    el.innerHTML  = html;
-    el.className  = 'kpi-value ' + (cls || '');
-    const subEl   = $(id + '-sub');
-    if (subEl) {
-      subEl.textContent = sub;
-      subEl.className   = 'kpi-delta ' + (subCls || '');
-    }
+  const set=(id,html,cls,sub,subCls)=>{
+    const el=$(id); if(!el)return; el.innerHTML=html; el.className='kpi-value '+(cls||'');
+    const se=$(id+'-sub'); if(se){se.textContent=sub;se.className='kpi-delta '+(subCls||'');}
   };
 
-  const npv = p.npv || 0;
-  set('kpi-npv',   Hc(npv, 1) + '<sup></sup>', npv >= 0 ? 'pos' : 'neg', npv >= 0 ? 'Value created above WACC' : 'Below WACC — value destruction', npv >= 0 ? '' : 'warn');
-  const irrValCls = p.irr == null ? 'neutral' : p.irr > wc ? 'pos' : p.irr >= wc - 0.02 ? 'warn' : 'neg';
-  const irrSubCls = p.irr == null ? 'neutral' : p.irr > wc ? '' : 'warn';
-  set('kpi-irr', p.irr != null ? (+p.irr * 100).toFixed(1) + '<sup>%</sup>' : '—', irrValCls, 'vs WACC ' + P(wc, 1) + ' · equity IRR', irrSubCls);
-  set('kpi-pb',    p.payback ? p.payback + '<sup>yr</sup>' : '—', 'neutral', 'Undiscounted recovery period', 'neutral');
-  const avgDscrCls = p.avg_dscr == null ? 'neutral'
-    : p.avg_dscr >= dt + 0.2 ? 'pos'
-    : p.avg_dscr >= dt       ? 'warn'
-    : 'neg';
-  const avgDscrSubCls = p.avg_dscr == null ? 'neutral' : p.avg_dscr >= dt ? '' : 'warn';
-  set('kpi-dscra', p.avg_dscr != null ? p.avg_dscr.toFixed(2) + '<sup>x</sup>' : '—', avgDscrCls, 'Avg across ' + Math.round(PARAMS.debt_tenor || 15) + '-yr debt period', avgDscrSubCls);
-  const minDscrCls = p.min_dscr == null ? 'neutral'
-    : p.min_dscr >= dt        ? 'pos'
-    : p.min_dscr >= dt - 0.15 ? 'warn'
-    : 'neg';
-  const minDscrSubCls = p.min_dscr == null ? 'neutral' : p.min_dscr >= dt ? '' : 'warn';
-  set('kpi-dscrm', p.min_dscr != null ? p.min_dscr.toFixed(2) + '<sup>x</sup>' : '—', minDscrCls, 'Covenant ≥ ' + dt.toFixed(2) + 'x — lender floor', minDscrSubCls);
-  set('kpi-capex', Hc(p.capex, 1) + '<sup></sup>', 'neutral', 'Overnight capital' + (PARAMS.debt_ratio ? ' · ' + P(PARAMS.debt_ratio, 0) + ' geared' : ''), 'neutral');
-  set('kpi-debt',  Hc(p.debt, 1)  + '<sup></sup>', 'neutral', (PARAMS.cost_of_debt || PARAMS.debt_rate) ? P(PARAMS.cost_of_debt || PARAMS.debt_rate, 1) + ' p.a. · ' + Math.round(PARAMS.debt_tenor || 15) + '-yr tenor' : 'Senior secured', 'neutral');
-  const moicCls    = p.moic == null ? 'neutral' : p.moic >= 2 ? 'pos' : p.moic >= 1 ? 'warn' : 'neg';
-  const moicSub    = p.moic == null ? 'Equity cash multiple'
-    : p.moic >= 2 ? 'Strong return — equity doubled'
-    : p.moic >= 1 ? 'Positive return — equity recovered'
-    : 'Return below equity invested';
-  const moicSubCls = p.moic == null ? 'neutral' : p.moic >= 1 ? '' : 'warn';
-  set('kpi-moic', p.moic != null ? p.moic.toFixed(2) + '<sup>x</sup>' : '—', moicCls, moicSub, moicSubCls);
+  // A — Returns
+  const npv=p.npv||0;
+  set('kpi-npv',Hc(npv,1),npv>=0?'pos':'neg',npv>=0?'Value created above WACC':'Below WACC — value destruction',npv>=0?'':'warn');
 
-  // ── Bankability KPIs ────────────────────────────────────────────────────
-  // In the bank strip: value numbers are always white (CSS-enforced).
-  // Colour signal lives exclusively in the sub-text (kpi-delta).
-  // Three-tier: 'pos' = green, 'warn' = amber, 'neg' = red, 'neutral' = muted.
+  const irr=p.irr; const iCls=irr==null?'neutral':irr>wc?'pos':irr>=wc-0.02?'warn':'neg';
+  set('kpi-irr',irr!=null?(+irr*100).toFixed(1)+'<sup>%</sup>':'—',iCls,'Equity IRR vs WACC '+P(wc,1),iCls==='pos'?'':'warn');
 
-  const llcr = p.llcr;
-  const plcr = p.plcr;
+  const pi_irr=p.project_irr_unlevered;
+  const piCls=pi_irr==null?'neutral':pi_irr>wc?'pos':pi_irr>=wc-0.02?'warn':'neg';
+  set('kpi-proj-irr',pi_irr!=null?(+pi_irr*100).toFixed(1)+'<sup>%</sup>':'—',piCls,'Unlevered asset IRR — independent of financing',piCls==='pos'?'':'warn');
 
-  // LLCR — Loan Life Coverage Ratio
-  // IFC minimum: 1.10x. Lender comfort: ≥ 1.25x.
-  set('kpi-llcr',
-    llcr != null ? llcr.toFixed(2) + '<sup>x</sup>' : '—',
-    'neutral',
-    llcr == null  ? 'Loan Life Coverage Ratio'
-    : llcr >= 1.25 ? 'Bankable — IFC lender comfort ≥ 1.25x'
-    : llcr >= 1.10 ? 'Marginal — above IFC min but below 1.25x'
-    : 'Below IFC minimum of 1.10x — not bankable',
-    llcr == null  ? 'neutral'
-    : llcr >= 1.25 ? 'pos'
-    : llcr >= 1.10 ? 'warn'
-    : 'neg'
-  );
+  set('kpi-wacc',(wc*100).toFixed(1)+'<sup>%</sup>','neutral','(1-D/V)×ke + D/V×kd×(1-t)','neutral');
 
-  // PLCR — Project Life Coverage Ratio
-  // IFC comfort: ≥ 1.20x. Marginal: 1.10x–1.20x.
-  set('kpi-plcr',
-    plcr != null ? plcr.toFixed(2) + '<sup>x</sup>' : '—',
-    'neutral',
-    plcr == null  ? 'Project Life Coverage Ratio'
-    : plcr >= 1.20 ? 'Adequate — project-life cash cover'
-    : plcr >= 1.10 ? 'Marginal — below 1.20x IFC comfort'
-    : 'Insufficient — project-life cash shortfall',
-    plcr == null  ? 'neutral'
-    : plcr >= 1.20 ? 'pos'
-    : plcr >= 1.10 ? 'warn'
-    : 'neg'
-  );
+  const sp=p.irr_spread; const spCls=sp==null?'neutral':sp>0?'pos':sp>=-0.02?'warn':'neg';
+  set('kpi-irr-spread',sp!=null?Pp(sp,1).replace('pp','<sup>pp</sup>'):'—',spCls,
+    sp==null?'Equity Alpha: IRR minus WACC':sp>0?`+${(sp*100).toFixed(1)}pp equity alpha — above hurdle`:`${(sp*100).toFixed(1)}pp — below hurdle rate`,spCls);
 
-  // Discounted Payback — green if recovered within asset life, red if beyond
-  const dpb      = p.discounted_payback != null ? +p.discounted_payback : null;
-  const lifetime = p.lifetime != null ? +p.lifetime : null;
-  const dpbSubCls = dpb == null || lifetime == null ? 'neutral'
-    : dpb < lifetime ? 'pos'
-    : 'neg';
-  const dpbSub = dpb == null || lifetime == null
-    ? 'Payback period discounted at WACC'
-    : dpb < lifetime
-      ? 'Recovered within ' + lifetime + '-yr asset life'
-      : 'Beyond ' + lifetime + '-yr asset life — equity at risk';
-  set('kpi-dpb',
-    dpb != null ? dpb + '<sup>yr</sup>' : '—',
-    'neutral',
-    dpbSub,
-    dpbSubCls
-  );
+  const pi=p.profitability_index;
+  const piVCls=pi==null?'neutral':pi>0?'pos':pi>=-0.1?'warn':'neg';
+  set('kpi-pi',pi!=null?pi.toFixed(3):'—',piVCls,pi==null?'Profitability Index (Brealey-Myers)':pi>0?'PI '+pi.toFixed(3)+' — value-creating above WACC':'PI negative — value-destroying','neutral');
 
-  // Portfolio LCOE — green if below PPA (cost floor covered), red if above
-  const lcoe    = p.lcoe;
-  const ppaPort = p.ppa_price != null ? p.ppa_price : null;
-  const lcoeSub = lcoe == null || ppaPort == null ? 'Levelised cost — PV(costs) ÷ PV(energy)'
-    : lcoe < ppaPort ? 'Below PPA — cost floor covered'
-    : 'Above PPA — loss-making at current price';
-  const lcoeSubCls = lcoe == null || ppaPort == null ? 'neutral'
-    : lcoe < ppaPort ? 'pos'
-    : 'neg';
-  set('kpi-lcoe',
-    lcoe != null ? Hc(lcoe, 0) : '—',
-    'neutral',
-    lcoeSub,
-    lcoeSubCls
-  );
+  // B — Investor
+  const moic=p.moic; const mCls=moic==null?'neutral':moic>=2?'pos':moic>=1?'warn':'neg';
+  set('kpi-moic',moic!=null?moic.toFixed(2)+'<sup>x</sup>':'—',mCls,moic==null?'Equity cash multiple':moic>=2?'Strong — equity doubled':moic>=1?'Positive — equity recovered':'Below equity invested',mCls);
+  set('kpi-capex',Hc(p.capex,1),'neutral','Overnight capital'+(PARAMS.debt_ratio?' · '+P(PARAMS.debt_ratio,0)+' geared':''),'neutral');
+  set('kpi-debt',Hc(p.debt,1),'neutral',(PARAMS.cost_of_debt?P(PARAMS.cost_of_debt,1)+' p.a. · ':'')+Math.round(PARAMS.debt_tenor||15)+'-yr tenor','neutral');
+  const dpb=p.discounted_payback, lt=p.lifetime;
+  const dpbCls=dpb==null||lt==null?'neutral':dpb<lt?'pos':'neg';
+  set('kpi-dpb',dpb!=null?dpb+'<sup>yr</sup>':'—','neutral',dpb==null?'Discounted at WACC':dpb<lt?'Recovered within '+lt+'-yr asset life':'Beyond '+lt+'-yr life — equity at risk',dpbCls);
 
-  // PPA / LCOE — revenue cover ratio
-  // ≥ 1.0x = PPA covers cost (green). < 1.0x = loss-making (red).
-  const spread = lcoe && ppaPort ? ppaPort / lcoe : null;
-  set('kpi-ppa-spread',
-    spread != null ? spread.toFixed(2) + '<sup>x</sup>' : '—',
-    'neutral',
-    spread == null ? 'PPA revenue cover over portfolio LCOE'
-    : spread >= 1  ? 'PPA above LCOE — margin positive'
-    : 'PPA below LCOE — loss-making at current price',
-    spread == null ? 'neutral'
-    : spread >= 1  ? 'pos'
-    : 'neg'
-  );
+  // C — Debt Service
+  const avgD=p.avg_dscr; const adCls=avgD==null?'neutral':avgD>=dt+0.2?'pos':avgD>=dt?'warn':'neg';
+  set('kpi-dscra',avgD!=null?avgD.toFixed(2)+'<sup>x</sup>':'—',adCls,'Avg across '+Math.round(PARAMS.debt_tenor||15)+'-yr debt period',avgD!=null&&avgD>=dt?'pos':'warn');
+  const minD=p.min_dscr; const mdCls=minD==null?'neutral':minD>=dt?'pos':minD>=dt-0.15?'warn':'neg';
+  set('kpi-dscrm',minD!=null?minD.toFixed(2)+'<sup>x</sup>':'—',mdCls,'Trough year · Covenant ≥'+dt.toFixed(2)+'x',mdCls);
+  const dLbl=minD==null?'—':minD>=dt?'✓ Pass':minD>=dt-0.15?'~ Watch':'✗ Fail';
+  const dSub=minD!=null?'Min '+minD.toFixed(2)+'x '+(minD>=dt?'≥':'<')+' '+dt.toFixed(2)+'x covenant':'Portfolio DSCR vs covenant';
+  set('kpi-dscr-pass',dLbl,'neutral',dSub,minD==null?'neutral':minD>=dt?'pos':minD>=dt-0.15?'warn':'neg');
 
-  // Portfolio PPA — green if above LCOE (profitable), red if at or below (loss-making)
-  const ppaSub = ppaPort == null || lcoe == null ? 'Portfolio contracted PPA price'
-    : ppaPort > lcoe ? 'Above LCOE — revenue covers cost floor'
-    : 'At or below LCOE — loss-making';
-  const ppaSubCls = ppaPort == null || lcoe == null ? 'neutral'
-    : ppaPort > lcoe ? 'pos'
-    : 'neg';
-  set('kpi-ppa-wa',
-    ppaPort != null ? Hc(ppaPort, 0) : '—',
-    'neutral',
-    ppaSub,
-    ppaSubCls
-  );
+  // DSCR Covenant Headroom = Min DSCR − Covenant (new KPI — no JSON change needed)
+  const headroom=minD!=null?minD-dt:null;
+  const hwCls=headroom==null?'neutral':headroom>=0.3?'pos':headroom>=0?'warn':'neg';
+  set('kpi-dscr-headroom',headroom!=null?(headroom>=0?'+':'')+headroom.toFixed(2)+'<sup>x</sup>':'—','neutral',
+    headroom==null?'Min DSCR minus covenant floor':headroom>=0.3?'+'+headroom.toFixed(2)+'x cushion — strong':headroom>=0?'+'+headroom.toFixed(2)+'x — thin cushion':'Covenant breach — '+headroom.toFixed(2)+'x',hwCls);
 
-  // P(NPV > 0) — Monte Carlo probability of positive NPV
-  // ≥ 90% = low risk / bankable. ≥ 70% = moderate. < 70% = high risk.
-  const portSv   = p.sensitivity || {};
-  const portProb = typeof portSv.mc_prob_positive === 'number' ? portSv.mc_prob_positive : null;
-  set('kpi-prob',
-    portProb != null ? (portProb * 100).toFixed(0) + '<sup>%</sup>' : '—',
-    'neutral',
-    portProb == null   ? 'Monte Carlo probability of positive NPV'
-    : portProb >= .9   ? 'Low risk — portfolio P(NPV>0) bankable'
-    : portProb >= .7   ? 'Moderate risk — review key sensitivities'
-    : 'High risk — NPV positive probability below threshold',
-    portProb == null   ? 'neutral'
-    : portProb >= .9   ? 'pos'
-    : portProb >= .7   ? 'warn'
-    : 'neg'
-  );
+  const llcr=p.llcr;
+  set('kpi-llcr',llcr!=null?llcr.toFixed(2)+'<sup>x</sup>':'—','neutral',llcr==null?'Loan Life Coverage Ratio':llcr>=1.25?'Bankable ≥ 1.25x IFC':llcr>=1.10?'Marginal — above IFC min':'Below 1.10x IFC minimum',llcr==null?'neutral':llcr>=1.25?'pos':llcr>=1.10?'warn':'neg');
+  const plcr=p.plcr;
+  set('kpi-plcr',plcr!=null?plcr.toFixed(2)+'<sup>x</sup>':'—','neutral',plcr==null?'Project Life Coverage Ratio':plcr>=1.20?'Adequate project-life cover':plcr>=1.10?'Marginal < 1.20x':'Insufficient cash shortfall',plcr==null?'neutral':plcr>=1.20?'pos':plcr>=1.10?'warn':'neg');
+  const de=p.debt_ebitda_peak;
+  set('kpi-debt-ebitda',de!=null?de.toFixed(1)+'<sup>x</sup>':'—','neutral',de==null?'Peak leverage · ≤6x comfort (S&P PF 2014)':de<=6?'≤6x — within S&P comfort range':de<=8?'Elevated — monitor carefully':'High gearing — stress test required',de==null?'neutral':de<=5?'pos':de<=8?'warn':'neg');
 
-  // DSCR Status — portfolio minimum DSCR vs covenant
-  // Pass = ≥ target. Watch = within 0.15x. Fail = below.
-  const dscrLabel = p.min_dscr == null ? '—'
-    : p.min_dscr >= dt        ? '✓ Pass'
-    : p.min_dscr >= dt - 0.15 ? '~ Watch'
-    : '✗ Fail';
-  const dscrSub = p.min_dscr != null
-    ? 'Portfolio min DSCR ' + p.min_dscr.toFixed(2) + 'x '
-      + (p.min_dscr >= dt ? '≥' : '<') + ' ' + dt.toFixed(2) + 'x covenant'
-    : 'Portfolio DSCR vs covenant';
-  set('kpi-dscr-pass',
-    dscrLabel,
-    'neutral',
-    dscrSub,
-    p.min_dscr == null   ? 'neutral'
-    : p.min_dscr >= dt        ? 'pos'
-    : p.min_dscr >= dt - 0.15 ? 'warn'
-    : 'neg'
-  );
+  // E — Pricing
+  const lcoe=p.lcoe, ppa=p.ppa_price;
+  const lSub=lcoe==null||ppa==null?'PV(costs)/PV(energy) at WACC':lcoe<ppa?'Below PPA — cost floor covered':'Above PPA — loss-making';
+  set('kpi-lcoe',lcoe!=null?Hc(lcoe,0):'—','neutral',lSub,lcoe==null?'neutral':lcoe<ppa?'pos':'neg');
+  const ppaSub=ppa==null||lcoe==null?'Revenue-weighted contracted PPA':ppa>lcoe?'Above LCOE — margin positive':'At or below LCOE — loss-making';
+  set('kpi-ppa-wa',ppa!=null?Hc(ppa,0):'—','neutral',ppaSub,ppa==null?'neutral':lcoe&&ppa>lcoe?'pos':'neg');
+  const cov=lcoe&&ppa?ppa/lcoe:null;
+  set('kpi-ppa-spread',cov!=null?cov.toFixed(2)+'<sup>x</sup>':'—','neutral',cov==null?'PPA/LCOE — lender revenue cover':cov>=1?'PPA above LCOE — margin positive':'PPA below LCOE — loss-making',cov==null?'neutral':cov>=1?'pos':'neg');
+  const bppa=p.breakeven_ppa;
+  const bCls=bppa==null?'neutral':ppa&&bppa<ppa?'pos':ppa&&bppa<=ppa*1.1?'warn':'neg';
+  set('kpi-beppa',bppa!=null?Hc(bppa,0):'—','neutral',bppa==null?'Minimum PPA for NPV=0 (bisection)':ppa&&bppa<ppa?'PPA '+(+((ppa-bppa)/bppa*100).toFixed(0))+'% above break-even':'At or near break-even',bCls);
+
+  // PPA Margin of Safety = (PPA − BE-PPA) / PPA (new KPI — computed from existing JSON fields)
+  const ppa_mos=(bppa!=null&&ppa!=null&&ppa>0)?(ppa-bppa)/ppa:null;
+  const mosCls=ppa_mos==null?'neutral':ppa_mos>=0.20?'pos':ppa_mos>=0.05?'warn':'neg';
+  set('kpi-ppa-mos',ppa_mos!=null?Pct(ppa_mos,1):'—','neutral',
+    ppa_mos==null?'(PPA − Break-even) / PPA':ppa_mos>=0.20?Pct(ppa_mos,1)+' margin above zero-NPV floor':ppa_mos>=0.05?'Thin cushion — monitor PPA renegotiation':'PPA at or below break-even',mosCls);
+
+  // F — Operations & ESG
+  const cf1=p.capacity_factor_yr1;
+  set('kpi-cf',cf1!=null?Pct(cf1,1):'—','neutral',cf1==null?'Energy / (MW × 8760 hr)':cf1>=0.35?'Strong capacity utilisation':cf1>=0.20?'Moderate — sector-typical':'Low — review grid constraints','neutral');
+  const curt=p.curtailment_rate;
+  const curtCls=curt==null?'neutral':curt<0.05?'pos':curt<0.15?'warn':'neg';
+  set('kpi-curt',curt!=null?Pct(curt,1):'—','neutral',curt==null?'Curtailed / (Delivered + Curtailed)':curt<0.05?'Low curtailment — grid well-utilised':curt<0.15?'Moderate — monitor grid constraints':'High curtailment — grid constraint risk',curtCls);
+  const portSv=p.sensitivity||{}, prob=typeof portSv.mc_prob_positive==='number'?portSv.mc_prob_positive:null;
+  set('kpi-prob',prob!=null?(prob*100).toFixed(0)+'<sup>%</sup>':'—','neutral',prob==null?'P(Positive NPV) — 5,000 MC scenarios':prob>=.9?'Low risk — ≥90% bankable threshold':prob>=.7?'Moderate risk — review sensitivities':'High risk — below bankability threshold',prob==null?'neutral':prob>=.9?'pos':prob>=.7?'warn':'neg');
+  const co2a=p.co2_avoided_annual;
+  set('kpi-co2-ann',co2a!=null?H(co2a,1)+' tCO₂':'—','neutral',co2a==null?'Annual abatement vs grid (IPCC AR6 WG3 2022)':co2a>0?'Carbon-negative — green bond eligible':'Emitter — higher than grid average',co2a==null?'neutral':co2a>0?'pos':'neg');
+  const co2l=p.co2_avoided_lifetime;
+  set('kpi-co2-life',co2l!=null?H(co2l,1)+' tCO₂':'—','neutral',co2l==null?'Lifetime abatement vs grid (IPCC AR6 WG3)':co2l>0?'DFI/green bond eligible (IPCC AR6)':'Higher emissions than grid average',co2l==null?'neutral':co2l>0?'pos':'neg');
 }
 
 /* ─── Narrative ──────────────────────────────────────────────────────── */
-
 function renderNarrative() {
-  const p  = DATA.technologies[PORT_KEY] || {};
-  const ke = PARAMS.cost_of_equity || 0;
-  const kd = PARAMS.cost_of_debt   || 0;
-  const dr = PARAMS.debt_ratio     || 0;
-  const tr = PARAMS.tax_rate       || 0;
-  const wc = ((1 - dr) * ke + dr * kd * (1 - tr)) || PARAMS.wacc || .08;
-  const dt = PARAMS.dscr_target || 1.3;
-
-  const dscrOk   = p.min_dscr != null && p.min_dscr >= dt;
-  const llcrOk   = p.llcr != null && p.llcr >= 1.25;
-  const ppaSpread = p.lcoe && p.ppa_price ? p.ppa_price / p.lcoe : null;
-  const portMC    = (p.sensitivity && p.sensitivity.mc_prob_positive) ?? null;
-
-  const riskLabel = portMC != null
-    ? portMC >= .9 ? '<span style="color:var(--accent)">low-risk</span>'
-    : portMC >= .7 ? '<span style="color:#FFD600">moderate-risk</span>'
-    : '<span style="color:#f85149">high-risk</span>'
-    : '';
-
-  const el = $('sys-narrative-text');
-  if (!el) return;
-
-  el.innerHTML =
-    'This portfolio delivers a net present value of ' +
-    '<strong class="nar-accent">' + Hc(p.npv, 1) + '</strong> — ' +
-    ((p.npv || 0) >= 0
-      ? '<span style="color:var(--accent)">value-creating</span> above'
-      : '<span style="color:#f85149">value-destroying at</span>') +
-    ' the ' + P(wc, 1) + ' cost of capital — with an equity IRR of ' +
-    '<strong class="nar-accent">' + (p.irr != null ? P(p.irr, 2) : 'N/A') + '</strong>' +
-    ' and capital recovery in <strong>' + (p.payback ? p.payback + ' years' : 'beyond asset life') + '</strong>. ' +
-    'Portfolio debt coverage: <strong style="' + (dscrOk ? 'color:var(--accent)' : 'color:#f85149') + '">' +
-    (p.min_dscr != null ? p.min_dscr.toFixed(2) + 'x' : '—') + '</strong> minimum DSCR' +
-    ' (covenant ' + dt.toFixed(2) + 'x) — avg DSCR <strong>' +
-    (p.avg_dscr != null ? p.avg_dscr.toFixed(2) + 'x' : '—') + '</strong>. ' +
-    'LLCR <strong>' + (p.llcr != null ? p.llcr.toFixed(2) + 'x' : '—') + '</strong> ' +
-    (llcrOk ? '<span style="color:var(--accent)">confirms bankability</span>' : '<span style="color:#f85149">below 1.25x lender threshold</span>') + '. ' +
-    (ppaSpread != null
-      ? 'PPA/LCOE cover ' + ppaSpread.toFixed(2) + 'x. MOIC <strong class="nar-accent">' + X(p.moic) + '</strong>' +
-        ' on ' + Hc(p.capex, 1) + ' capital deployed. '
-      : '') +
-    (riskLabel
-      ? 'Monte Carlo: <strong>' + riskLabel + '</strong> — ' + (portMC != null ? (portMC * 100).toFixed(0) + '%' : '') + ' probability of positive NPV.'
-      : '');
+  const p=DATA.technologies[PORT_KEY]||{};
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wc=((1-dr)*ke+dr*kd*(1-tr))||PARAMS.wacc||.08;
+  const dt=PARAMS.dscr_target||1.3;
+  const irr_sp=p.irr_spread, pi=p.profitability_index;
+  const portMC=(p.sensitivity&&p.sensitivity.mc_prob_positive)??null;
+  const riskLabel=portMC!=null?portMC>=.9?'<span style="color:var(--accent)">low-risk</span>':portMC>=.7?'<span style="color:#FFD600">moderate-risk</span>':'<span style="color:#f85149">high-risk</span>':'';
+  const dscrOk=p.min_dscr!=null&&p.min_dscr>=dt;
+  const llcrOk=p.llcr!=null&&p.llcr>=1.25;
+  const el=$('sys-narrative-text'); if(!el)return;
+  el.innerHTML=
+    'This portfolio delivers <strong class="nar-accent">'+Hc(p.npv,1)+'</strong> NPV — '+(p.npv>=0?'<span style="color:var(--accent)">value-creating</span>':'<span style="color:#f85149">value-destroying</span>')+
+    ' above the '+P(wc,1)+' WACC. Equity IRR <strong class="nar-accent">'+(p.irr!=null?P(p.irr,2):'N/A')+'</strong> vs Project IRR <strong>'+(p.project_irr_unlevered!=null?P(p.project_irr_unlevered,2):'N/A')+'</strong> (unlevered) — financing '+
+    (irr_sp!=null&&irr_sp>0?'<span style="color:var(--accent)">adds '+Pp(irr_sp,1)+' IRR spread above hurdle.</span>':'<span style="color:#f85149">reduces equity return to '+Pp(irr_sp,1)+'.</span>')+
+    ' PI: <strong>'+(pi!=null?pi.toFixed(3):'—')+'</strong>. MOIC <strong class="nar-accent">'+X(p.moic)+'</strong> — payback <strong>'+(p.payback?p.payback+' yr':'beyond life')+'</strong>. '+
+    'DSCR: <strong style="'+(dscrOk?'color:var(--accent)':'color:#f85149')+'">'+(p.min_dscr!=null?p.min_dscr.toFixed(2)+'x trough':'—')+'</strong> vs '+dt.toFixed(2)+'x covenant. LLCR '+X(p.llcr)+' '+(llcrOk?'<span style="color:var(--accent)">bankable</span>':'<span style="color:#f85149">below 1.25x</span>')+' '+
+    (riskLabel?'MC risk: <strong>'+riskLabel+'</strong> — '+(portMC!=null?(portMC*100).toFixed(0)+'% probability of positive NPV. ':'')+'':('' ))+(p.co2_avoided_lifetime!=null&&p.co2_avoided_lifetime>0?' <span style="color:var(--color-pos)">CO₂ abatement: '+H(p.co2_avoided_lifetime,0)+' tCO₂e lifetime — green capital eligible (IPCC AR6 WG3).</span>':'');
 }
 
 /* ─── Auto-Insights ──────────────────────────────────────────────────── */
-
 function renderInsights() {
-  const port  = PORT_KEY ? DATA.technologies[PORT_KEY] || {} : {};
-  const items = [];
-
-  let bestIRR = null, bestIRRName = '', maxCapex = 0, maxCapexName = '';
-  let minPayback = 999, minPaybackName = '', minLcoe = Infinity, minLcoeName = '';
-
-  TECHS.forEach(n => {
-    const t = DATA.technologies[n];
-    if (t.irr != null && (bestIRR == null || t.irr > bestIRR)) { bestIRR = t.irr; bestIRRName = n; }
-    if ((t.capex || 0) > maxCapex)  { maxCapex = t.capex; maxCapexName = n; }
-    if (t.payback && t.payback < minPayback) { minPayback = t.payback; minPaybackName = n; }
-    if (t.lcoe && t.lcoe < minLcoe) { minLcoe = t.lcoe; minLcoeName = n; }
+  const port=PORT_KEY?DATA.technologies[PORT_KEY]||{}:{};
+  const items=[];
+  let bestIRR=null,bestIRRN='',maxCap=0,maxCapN='',minLcoe=Infinity,minLcoeN='',bestPI=null,bestPIN='';
+  TECHS.forEach(n=>{
+    const t=DATA.technologies[n];
+    if(t.irr!=null&&(bestIRR==null||t.irr>bestIRR)){bestIRR=t.irr;bestIRRN=n;}
+    if((t.capex||0)>maxCap){maxCap=t.capex;maxCapN=n;}
+    if(t.lcoe&&t.lcoe<minLcoe){minLcoe=t.lcoe;minLcoeN=n;}
+    if(t.profitability_index!=null&&(bestPI==null||t.profitability_index>bestPI)){bestPI=t.profitability_index;bestPIN=n;}
   });
-
-  if (bestIRRName)  items.push({ tag: 'Best IRR',        val: P(bestIRR, 1),     sub: bestIRRName + ' vs Portfolio ' + P(port.irr, 1) });
-  if (maxCapexName) items.push({ tag: 'Largest Investment', val: Hc(maxCapex, 1), sub: maxCapexName + ' (' + ((maxCapex / (port.capex || 1)) * 100).toFixed(0) + '% of portfolio CAPEX)' });
-  if (minPaybackName) items.push({ tag: 'Fastest Payback', val: minPayback + ' yr', sub: minPaybackName + ' — Portfolio: ' + (port.payback ? port.payback + ' yr' : '—') });
-  if (minLcoeName && minLcoe < Infinity) items.push({ tag: 'Lowest LCOE', val: Hc(minLcoe, 0), sub: minLcoeName + ' — cheapest to generate' });
-
-  const dt  = PARAMS.dscr_target || 1.3;
-  const ok  = TECHS.filter(n => { const t = DATA.technologies[n]; return t.min_dscr != null && t.min_dscr >= dt; }).length;
-  items.push({ tag: 'DSCR Covenant', val: ok + '/' + TECHS.length, sub: 'Technologies passing · Portfolio: ' + (port.min_dscr >= dt ? '✓' : '✗') + ' ' + (port.min_dscr || 0).toFixed(2) + 'x' });
-
-  const probs = TECHS.map(n => DATA.technologies[n]?.sensitivity?.mc_prob_positive).filter(v => v != null);
-  if (probs.length) items.push({ tag: 'Avg P(NPV>0)', val: ((probs.reduce((a, b) => a + b, 0) / probs.length) * 100).toFixed(0) + '%', sub: 'Per-tech MC average risk assessment' });
-
-  let bestMoic = 0, bestMoicName = '';
-  TECHS.forEach(n => { if ((DATA.technologies[n].moic || 0) > bestMoic) { bestMoic = DATA.technologies[n].moic; bestMoicName = n; } });
-  if (bestMoicName) items.push({ tag: 'Best MOIC', val: bestMoic.toFixed(2) + 'x', sub: bestMoicName + ' — Portfolio: ' + X(port.moic) });
-
-  $('auto-insights').innerHTML = items.map(i => `
-    <div class="ai-card">
-      <div class="ai-tag">${i.tag}</div>
-      <div class="ai-val">${i.val}</div>
-      <div class="ai-sub">${i.sub}</div>
-    </div>`).join('');
+  if(bestIRRN) items.push({tag:'Best Equity IRR',val:P(bestIRR,1),sub:bestIRRN+' · Portfolio: '+P(port.irr,1)+' · Alpha: '+Pp(port.irr_spread,1)});
+  if(bestPIN) items.push({tag:'Best Profitability Index (PI)',val:(bestPI||0).toFixed(3),sub:bestPIN+' — NPV/CAPEX · highest value per capital unit'});
+  if(maxCapN) items.push({tag:'Largest Investment',val:H(maxCap,1),sub:maxCapN+' ('+((maxCap/(port.capex||1))*100).toFixed(0)+'% of portfolio CAPEX)'});
+  if(minLcoeN&&minLcoe<Infinity) items.push({tag:'Lowest LCOE',val:H(minLcoe,0),sub:minLcoeN+' — cheapest to generate'});
+  const dt=PARAMS.dscr_target||1.3;
+  const ok=TECHS.filter(n=>{const t=DATA.technologies[n];return t.min_dscr!=null&&t.min_dscr>=dt;}).length;
+  items.push({tag:'DSCR Covenant',val:ok+'/'+TECHS.length,sub:'Technologies passing · Portfolio: '+(port.min_dscr>=dt?'✓':'✗')+' '+(port.min_dscr||0).toFixed(2)+'x'});
+  const co2=port.co2_avoided_lifetime; if(co2!=null) items.push({tag:'CO₂ Abatement (Life)',val:H(co2,1)+' tCO₂e',sub:'Portfolio lifetime — IPCC AR6 WG3 2022 · DFI/green bond eligible'});
+  const probs=TECHS.map(n=>DATA.technologies[n]?.sensitivity?.mc_prob_positive).filter(v=>v!=null);
+  if(probs.length) items.push({tag:'Avg P(Positive NPV)',val:((probs.reduce((a,b)=>a+b,0)/probs.length)*100).toFixed(0)+'%',sub:'Per-tech Monte Carlo average · ≥90% bankable'});
+  $('auto-insights').innerHTML=items.map(i=>`<div class="ai-card"><div class="ai-tag">${i.tag}</div><div class="ai-val">${i.val}</div><div class="ai-sub">${i.sub}</div></div>`).join('');
 }
 
 /* ─── NPV Bar ────────────────────────────────────────────────────────── */
-
 function renderNPVBar() {
-  const cur     = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const portNpv = PORT_KEY ? DATA.technologies[PORT_KEY]?.npv : null;
-  const labels  = [...TECHS, '★ Portfolio'];
-  const npvs    = [...TECHS.map(n => (DATA.technologies[n].npv || 0) / 1e3), portNpv != null ? portNpv / 1e3 : 0];
-
-  mk('npvBar', {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: `NPV (${cur}k)`,
-        data:  npvs,
-        backgroundColor: npvs.map((v, i) => i === labels.length - 1 ? 'rgba(245,196,0,.75)' : v >= 0 ? 'rgba(184,232,54,.7)' : 'rgba(240,79,71,.65)'),
-        borderColor:     npvs.map((v, i) => i === labels.length - 1 ? '#f5c400' : v >= 0 ? '#b8e836' : '#f04f47'),
-        borderWidth: 1, borderRadius: 4, borderSkipped: false,
-      }],
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { ...TT, callbacks: { label: c => ` NPV: ${H(c.raw * 1e3, 1, '')} ` } } },
-      scales: {
-        x: { grid: { color: '#182030' }, ticks: { callback: v => H(v * 1e3, 0) + '' }, title: { display: true, text: `NPV (${cur}k)`, color: '#6b7d94' } },
-        y: { grid: { display: false } },
-      },
-    },
-  });
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'';
+  const pNpv=PORT_KEY?DATA.technologies[PORT_KEY]?.npv:null;
+  const labels=[...TECHS,'★ Portfolio'];
+  const npvs=[...TECHS.map(n=>(DATA.technologies[n].npv||0)/1e3),pNpv!=null?pNpv/1e3:0];
+  mk('npvBar',{type:'bar',data:{labels,datasets:[{label:`NPV (${cur}k)`,data:npvs,backgroundColor:npvs.map((v,i)=>i===labels.length-1?'rgba(245,196,0,.75)':v>=0?'rgba(184,232,54,.7)':'rgba(240,79,71,.65)'),borderColor:npvs.map((v,i)=>i===labels.length-1?'#f5c400':v>=0?'#b8e836':'#f04f47'),borderWidth:1,borderRadius:4,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>` NPV: ${H(c.raw*1e3,1)}`}}},scales:{x:{grid:{color:'#182030'},ticks:{callback:v=>H(v*1e3,0)},title:{display:true,text:`NPV (${cur}k)`,color:'#6b7d94'}},y:{grid:{display:false}}}}});
 }
 
-/* ─── CAPEX Stack ────────────────────────────────────────────────────── */
-
-function renderCapexStack() {
-  const cur    = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const port   = PORT_KEY ? DATA.technologies[PORT_KEY] || {} : {};
-  const labels = [...TECHS, '★ Portfolio'];
-  const debts    = [...TECHS.map(n => (DATA.technologies[n].debt   || 0) / 1e6), (port.debt   || 0) / 1e6];
-  const equities = [...TECHS.map(n => (DATA.technologies[n].equity || 0) / 1e6), (port.equity || 0) / 1e6];
-
-  mk('capexStack', {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Senior Debt', data: debts,    backgroundColor: debts.map((_, i)    => i === labels.length - 1 ? 'rgba(75,156,245,.9)' : 'rgba(75,156,245,.7)'),    borderColor: '#4b9cf5', borderWidth: 1, borderRadius: 3 },
-        { label: 'Equity',      data: equities, backgroundColor: equities.map((_, i) => i === labels.length - 1 ? 'rgba(184,232,54,.8)' : 'rgba(184,232,54,.55)'), borderColor: '#b8e836', borderWidth: 1, borderRadius: 3 },
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { ...TT, callbacks: { label: c => `${c.dataset.label}: ${cur}${c.raw.toFixed(2)} M` } } },
-      scales: {
-        x: { stacked: true, grid: { display: false }, ticks: { maxRotation: 30 } },
-        y: { stacked: true, grid: { color: '#182030' }, ticks: { callback: v => `${cur}${v.toFixed(1)}M` }, title: { display: true, text: `Capital (${cur}M)`, color: '#6b7d94' } },
-      },
-    },
-  });
+/* ─── IRR Waterfall ──────────────────────────────────────────────────── */
+function renderIRRWaterfall() {
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wc=((1-dr)*ke+dr*kd*(1-tr))||PARAMS.wacc||.08;
+  const port=DATA.technologies[PORT_KEY]||{};
+  const projIRR=port.project_irr_unlevered, eqIRR=port.irr;
+  const finEff=(projIRR!=null&&eqIRR!=null)?eqIRR-projIRR:0;
+  const bars=[projIRR||0, finEff, eqIRR||0, wc];
+  const labels=['Project IRR\n(Unlevered)','Financing\nEffect','Equity IRR\n(Levered)','WACC\n(Hurdle)'];
+  const bgc=['rgba(75,156,245,.7)',finEff>=0?'rgba(184,232,54,.7)':'rgba(240,79,71,.65)','rgba(138,92,240,.75)','rgba(148,163,184,.55)'];
+  const bdc=['#4b9cf5',finEff>=0?'#b8e836':'#f04f47','#8a5cf0','#94a3b8'];
+  mk('irrWaterfall',{type:'bar',data:{labels,datasets:[{label:'Rate of Return',data:bars,backgroundColor:bgc,borderColor:bdc,borderWidth:1.5,borderRadius:4},{type:'line',label:'WACC',data:Array(4).fill(wc*100/100),borderColor:'rgba(240,79,71,.5)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===1?`WACC: ${(wc*100).toFixed(1)}%`:`${c.dataset.label}: ${(c.raw*100).toFixed(1)}%`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#182030'},ticks:{callback:v=>(v*100).toFixed(1)+'%'},title:{display:true,text:'Return (%)',color:'#6b7d94'},min:Math.min(0,(projIRR||0)-0.01)}}}});
 }
 
-/* ─── IRR Chart ──────────────────────────────────────────────────────── */
-
+/* ─── IRR vs WACC + Spread ───────────────────────────────────────────── */
 function renderIRR() {
-  const ke   = PARAMS.cost_of_equity || 0;
-  const kd   = PARAMS.cost_of_debt   || 0;
-  const dr   = PARAMS.debt_ratio     || 0;
-  const tr   = PARAMS.tax_rate       || 0;
-  const wc   = ((1 - dr) * ke + dr * kd * (1 - tr) || PARAMS.wacc || .08) * 100;
-  const port = PORT_KEY ? DATA.technologies[PORT_KEY] || {} : {};
-  const labels = [...TECHS, '★ Portfolio'];
-  const irrs   = [
-    ...TECHS.map(n => { const v = DATA.technologies[n].irr; return v != null ? +v * 100 : null; }),
-    port.irr != null ? +port.irr * 100 : null,
-  ];
-
-  mk('irrChart', {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'IRR (%)', data: irrs,
-          backgroundColor: irrs.map((v, i) => i === labels.length - 1 ? 'rgba(245,196,0,.75)' : v != null && v > wc ? 'rgba(184,232,54,.7)' : 'rgba(240,79,71,.65)'),
-          borderColor:     irrs.map((v, i) => i === labels.length - 1 ? '#f5c400' : v != null && v > wc ? '#b8e836' : '#f04f47'),
-          borderWidth: 1, borderRadius: 4,
-        },
-        { type: 'line', label: 'WACC', data: Array(labels.length).fill(wc), borderColor: 'rgba(240,79,71,.6)', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, fill: false },
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { ...TT, callbacks: { label: c => c.datasetIndex === 1 ? `WACC: ${wc.toFixed(1)}%` : `IRR: ${c.raw != null ? c.raw.toFixed(2) : 'N/A'}%` } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { maxRotation: 30 } },
-        y: { grid: { color: '#182030' }, ticks: { callback: v => v.toFixed(1) + '%' }, title: { display: true, text: 'Return (%)', color: '#6b7d94' } },
-      },
-    },
-  });
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wc=((1-dr)*ke+dr*kd*(1-tr)||PARAMS.wacc||.08)*100;
+  const port=PORT_KEY?DATA.technologies[PORT_KEY]||{}:{};
+  const labels=[...TECHS,'★ Portfolio'];
+  const irrs=[...TECHS.map(n=>{const v=DATA.technologies[n].irr;return v!=null?+v*100:null;}),port.irr!=null?+port.irr*100:null];
+  mk('irrChart',{type:'bar',data:{labels,datasets:[{label:'Equity IRR (%)',data:irrs,backgroundColor:irrs.map((v,i)=>i===labels.length-1?'rgba(245,196,0,.75)':v!=null&&v>wc?'rgba(184,232,54,.7)':'rgba(240,79,71,.65)'),borderColor:irrs.map((v,i)=>i===labels.length-1?'#f5c400':v!=null&&v>wc?'#b8e836':'#f04f47'),borderWidth:1,borderRadius:4},{type:'line',label:'WACC',data:Array(labels.length).fill(wc),borderColor:'rgba(240,79,71,.6)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>c.datasetIndex===1?`WACC: ${wc.toFixed(1)}%`:`IRR: ${c.raw!=null?c.raw.toFixed(2):'N/A'}%`}}},scales:{x:{grid:{display:false},ticks:{maxRotation:30}},y:{grid:{color:'#182030'},ticks:{callback:v=>v.toFixed(1)+'%'},title:{display:true,text:'Return (%)',color:'#6b7d94'}}}}});
 }
 
-/* ─── KPI Table ──────────────────────────────────────────────────────── */
-
+/* ─── KPI Table — Extended ───────────────────────────────────────────── */
 function renderKPITable() {
-  const ke = PARAMS.cost_of_equity || 0;
-  const kd = PARAMS.cost_of_debt   || 0;
-  const dr = PARAMS.debt_ratio     || 0;
-  const tr = PARAMS.tax_rate       || 0;
-  const wc = (1 - dr) * ke + dr * kd * (1 - tr) || PARAMS.wacc || .08;
-  const dt = PARAMS.dscr_target || 1.3;
-
-  // IRR threshold: green > WACC, amber within 2pp below WACC, red further below
-  const irrCls = irr => {
-    if (irr == null) return '';
-    if (irr > wc)           return 'ok';
-    if (irr >= wc - 0.02)  return 'warn';
-    return 'fail';
-  };
-
-  // Payback threshold (years): green ≤ 10, amber ≤ 15, red > 15
-  const pbCls = pb => {
-    if (!pb) return '';
-    if (pb <= 10) return 'ok';
-    if (pb <= 15) return 'warn';
-    return 'fail';
-  };
-
-  // MOIC threshold: green ≥ 2x, amber ≥ 1x, red < 1x
-  const moicCls = m => {
-    if (m == null || isNaN(m)) return '';
-    if (m >= 2) return 'ok';
-    if (m >= 1) return 'warn';
-    return 'fail';
-  };
-
-  // DSCR pass/amber/fail: green ≥ target, amber within 0.15 below, red further
-  const dscrCls = (minDscr) => {
-    if (minDscr == null) return '';
-    if (minDscr >= dt)         return 'ok';
-    if (minDscr >= dt - 0.15)  return 'warn';
-    return 'fail';
-  };
-
-  const dscrLabel = (minDscr) => {
-    if (minDscr == null) return '—';
-    if (minDscr >= dt)        return '✓ Pass';
-    if (minDscr >= dt - 0.15) return '~ Watch';
-    return '✗ Fail';
-  };
-
-  const tbody = $('kpi-tbody');
-  if (!tbody) return;
-
-  tbody.innerHTML = [...TECHS, PORT_KEY]
-    .filter(n => n && DATA.technologies[n])
-    .map(n => {
-      const t   = DATA.technologies[n];
-      const isP = n === PORT_KEY;
-      return `<tr style="${isP ? 'background:rgba(184,232,54,.04)' : ''}">
-        <td style="color:var(--text)">${isP ? '★ Portfolio' : n}</td>
-        <td>${H(t.capex, 1)}</td>
-        <td class="${t.npv >= 0 ? 'ok' : 'fail'}">${H(t.npv, 1)}</td>
-        <td class="${irrCls(t.irr)}">${t.irr != null ? P(t.irr, 2) : '—'}</td>
-        <td class="${pbCls(t.payback)}">${t.payback ? t.payback + ' yr' : '—'}</td>
-        <td class="${moicCls(t.moic)}">${X(t.moic)}</td>
-        <td class="${dscrCls(t.min_dscr)}">${dscrLabel(t.min_dscr)}</td>
-      </tr>`;
-    }).join('');
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wc=(1-dr)*ke+dr*kd*(1-tr)||PARAMS.wacc||.08;
+  const dt=PARAMS.dscr_target||1.3;
+  const iCls=irr=>irr==null?'':irr>wc?'ok':irr>=wc-0.02?'warn':'fail';
+  const mCls=m=>m==null||isNaN(m)?'':m>=2?'ok':m>=1?'warn':'fail';
+  const dCls=d=>d==null?'':d>=dt?'ok':d>=dt-0.15?'warn':'fail';
+  const tbody=$('kpi-tbody'); if(!tbody)return;
+  tbody.innerHTML=[...TECHS,PORT_KEY].filter(n=>n&&DATA.technologies[n]).map(n=>{
+    const t=DATA.technologies[n], isP=n===PORT_KEY;
+    const sp=t.irr_spread, pi=t.profitability_index;
+    return `<tr style="${isP?'background:rgba(184,232,54,.04)':''}">
+      <td style="color:var(--text)">${isP?'★ Portfolio':n}</td>
+      <td>${H(t.capex,1)}</td>
+      <td class="${t.npv>=0?'ok':'fail'}">${H(t.npv,1)}</td>
+      <td class="${iCls(t.irr)}">${t.irr!=null?P(t.irr,2):'—'}</td>
+      <td class="${iCls(t.project_irr_unlevered)}">${t.project_irr_unlevered!=null?P(t.project_irr_unlevered,2):'—'}</td>
+      <td class="${sp!=null?sp>0?'ok':sp>=-0.02?'warn':'fail':''}">${sp!=null?Pp(sp,1):'—'}</td>
+      <td class="${pi!=null?pi>0?'ok':pi>=-0.05?'warn':'fail':''}">${pi!=null?pi.toFixed(3):'—'}</td>
+      <td class="${mCls(t.moic)}">${X(t.moic)}</td>
+      <td class="${dCls(t.min_dscr)}">${t.min_dscr!=null?t.min_dscr.toFixed(2)+'x':'—'}</td>
+    </tr>`;
+  }).join('');
 }
 
 /* ─── Cashflow + DSCR ────────────────────────────────────────────────── */
-
 function renderCF() {
-  const name   = $('ts-tech').value;
-  const metric = $('ts-metric').value;
-  const t      = DATA.technologies[name];
-  if (!t) return;
-
-  const ts   = t.timeseries || {};
-  const years = ts.years || [];
-  const fcf   = (ts.fcf || []).map(v => v == null ? null : v / 1e3);
-  const cum   = (ts.cum_cashflow || []).map(v => v == null ? null : v / 1e3);
-  const oDiv  = metric === 'dscr' ? 1 : 1e3;
-  const ovr   = (ts[metric] || []).map(v => v == null ? null : v / oDiv);
-  const cur   = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const dt    = PARAMS.dscr_target || 1.3;
-
-  const oLabel = {
-    dscr:         'DSCR (x)',
-    debt_balance: `Debt Bal (${cur}k)`,
-    debt_service: `Debt Svc (${cur}k)`,
-    revenue:      `Revenue (${cur}k)`,
-    ebitda:       `EBITDA (${cur}k)`,
-    cfads:        `CFADS (${cur}k)`,
-  }[metric] || metric;
-
-  const datasets = [
-    { type: 'bar',  label: 'FCF / FCFE (k)', data: fcf, backgroundColor: fcf.map(v => (v || 0) >= 0 ? 'rgba(75,156,245,.6)' : 'rgba(240,79,71,.5)'), borderColor: fcf.map(v => (v || 0) >= 0 ? '#4b9cf5' : '#f04f47'), borderWidth: 1, borderRadius: 3, yAxisID: 'y' },
-    { type: 'line', label: 'Cum FCF (k)', data: cum, borderColor: 'rgba(184,232,54,.45)', borderWidth: 2, borderDash: [4, 3], pointRadius: 2, fill: false, yAxisID: 'y', tension: .3, spanGaps: true },
-    { type: 'line', label: oLabel, data: ovr, borderColor: '#f5c400', borderWidth: 2, pointRadius: 3, pointStyle: 'rect', fill: false, yAxisID: 'y2', tension: .3, spanGaps: true },
+  const name=$('ts-tech').value, metric=$('ts-metric').value;
+  const t=DATA.technologies[name]; if(!t)return;
+  const ts=t.timeseries||{}, years=ts.years||[];
+  const fcf=(ts.fcf||[]).map(v=>v==null?null:v/1e3);
+  const cum=(ts.cum_cashflow||[]).map(v=>v==null?null:v/1e3);
+  const oDiv=metric==='dscr'?1:1e3;
+  const ovr=(ts[metric]||[]).map(v=>v==null?null:v/oDiv);
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'', dt=PARAMS.dscr_target||1.3;
+  const oLabel={dscr:'DSCR (x)',debt_balance:`Debt Bal (${cur}k)`,debt_service:`Debt Svc (${cur}k)`,cfads:`CFADS (${cur}k)`,fcff:`FCFF (${cur}k)`,revenue:`Revenue (${cur}k)`,ebitda:`EBITDA (${cur}k)`}[metric]||metric;
+  const ds=[
+    {type:'bar',label:'FCFE (k)',data:fcf,backgroundColor:fcf.map(v=>(v||0)>=0?'rgba(75,156,245,.6)':'rgba(240,79,71,.5)'),borderColor:fcf.map(v=>(v||0)>=0?'#4b9cf5':'#f04f47'),borderWidth:1,borderRadius:3,yAxisID:'y'},
+    {type:'line',label:'Cum FCFE (k)',data:cum,borderColor:'rgba(184,232,54,.45)',borderWidth:2,borderDash:[4,3],pointRadius:2,fill:false,yAxisID:'y',tension:.3,spanGaps:true},
+    {type:'line',label:oLabel,data:ovr,borderColor:'#f5c400',borderWidth:2,pointRadius:3,pointStyle:'rect',fill:false,yAxisID:'y2',tension:.3,spanGaps:true},
   ];
-
-  if (metric === 'dscr' && years.length) {
-    datasets.push({ type: 'line', label: 'Min DSCR', data: Array(years.length).fill(dt), borderColor: 'rgba(240,79,71,.45)', borderWidth: 1.2, borderDash: [6, 4], pointRadius: 0, fill: false, yAxisID: 'y2' });
-  }
-
-  mk('cfDscrChart', {
-    type: 'bar',
-    data: { labels: years, datasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16, filter: i => i.text !== 'Min DSCR' } }, tooltip: { ...TT } },
-      scales: {
-        x:  { grid: { color: '#182030' }, title: { display: true, text: 'Year', color: '#6b7d94' } },
-        y:  { grid: { color: '#182030' }, ticks: { callback: v => H(v * 1e3, 0) + '' }, title: { display: true, text: `Cash Flow (${cur}k)`, color: '#6b7d94' } },
-        y2: { position: 'right', grid: { display: false }, ticks: { callback: v => metric === 'dscr' ? v.toFixed(2) + 'x' : H(v * 1e3, 0) + '' }, title: { display: true, text: oLabel, color: '#f5c400' } },
-      },
-    },
-  });
+  if(metric==='dscr'&&years.length) ds.push({type:'line',label:'Min DSCR',data:Array(years.length).fill(dt),borderColor:'rgba(240,79,71,.45)',borderWidth:1.2,borderDash:[6,4],pointRadius:0,fill:false,yAxisID:'y2'});
+  mk('cfDscrChart',{type:'bar',data:{labels:years,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:16,filter:i=>i.text!=='Min DSCR'}},tooltip:{...TT}},scales:{x:{grid:{color:'#182030'},title:{display:true,text:'Year',color:'#6b7d94'}},y:{grid:{color:'#182030'},ticks:{callback:v=>H(v*1e3,0)+''},title:{display:true,text:`Cash Flow (${cur}k)`,color:'#6b7d94'}},y2:{position:'right',grid:{display:false},ticks:{callback:v=>metric==='dscr'?v.toFixed(2)+'x':H(v*1e3,0)+''},title:{display:true,text:oLabel,color:'#f5c400'}}}}});
 }
 
 function renderCFInsights() {
-  const name   = $('ts-tech').value;
-  const t      = DATA.technologies[name];
-  if (!t) return;
-
-  const ts      = t.timeseries || {};
-  const dscr    = (ts.dscr || []).filter(v => v != null);
-  const cfads   = ts.cfads || ts.fcf || [];
-  const peak    = cfads.reduce((a, b) => Math.max(a, b || 0), 0);
-  const avgDscr = dscr.length ? dscr.reduce((a, b) => a + b, 0) / dscr.length : null;
-
-  const el = $('cf-insights');
-  if (!el) return;
-  el.innerHTML = [
-    { n: H(t.npv, 1) + '',                           l: 'Net Present Value',    c: t.npv >= 0 ? '' : 'neg' },
-    { n: t.payback ? t.payback + ' yr' : '—',         l: 'Payback Period',       c: '' },
-    { n: H(peak * 1e3, 1) + '',                       l: 'Peak Annual FCF',      c: '' },
-    { n: avgDscr != null ? avgDscr.toFixed(2) + 'x' : '—', l: 'Avg DSCR (debt period)', c: avgDscr >= (PARAMS.dscr_target || 1.3) ? '' : 'warn' },
-  ].map(i => `<div class="insight"><div class="insight-num ${i.c}">${i.n}</div><div class="insight-label">${i.l}</div></div>`).join('');
+  const name=$('ts-tech').value, t=DATA.technologies[name]; if(!t)return;
+  const ts=t.timeseries||{}, dscr=(ts.dscr||[]).filter(v=>v!=null);
+  const cfads=ts.cfads||ts.fcf||[], peak=cfads.reduce((a,b)=>Math.max(a,b||0),0);
+  const avgD=dscr.length?dscr.reduce((a,b)=>a+b,0)/dscr.length:null;
+  const el=$('cf-insights'); if(!el)return;
+  el.innerHTML=[
+    {n:H(t.npv,1)+'',l:'Net Present Value',c:t.npv>=0?'':'neg'},
+    {n:t.payback?t.payback+' yr':'—',l:'Payback Period',c:''},
+    {n:H(peak*1e3,1)+'',l:'Peak Annual FCFE',c:''},
+    {n:avgD!=null?avgD.toFixed(2)+'x':'—',l:'Avg DSCR (debt period)',c:avgD>=(PARAMS.dscr_target||1.3)?'':'warn'},
+  ].map(i=>`<div class="insight"><div class="insight-num ${i.c}">${i.n}</div><div class="insight-label">${i.l}</div></div>`).join('');
 }
 
-/* ─── Debt Amortisation ──────────────────────────────────────────────── */
-
+/* ─── Debt ───────────────────────────────────────────────────────────── */
 function renderDebt() {
-  const cur   = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const maxLt = Math.max(...TECHS.map(n => DATA.technologies[n].lifetime || 20));
-  const years = Array.from({ length: maxLt }, (_, i) => i + 1);
-
-  const techDatasets = TECHS.filter(n => DATA.technologies[n].debt > 0).map(n => {
-    const ts = DATA.technologies[n].timeseries || {};
-    return {
-      label: n,
-      data:  (ts.debt_balance || []).map(v => v == null ? null : v / 1e6),
-      borderColor: tc(n), backgroundColor: tc(n) + '22',
-      borderWidth: 2, pointRadius: 2, fill: false, tension: .3, spanGaps: true,
-    };
-  });
-
-  const portTs  = PORT_KEY ? DATA.technologies[PORT_KEY]?.timeseries || {} : {};
-  const portBal = (portTs.debt_balance || []).map(v => v == null ? null : v / 1e6);
-
-  mk('debtChart', {
-    type: 'line',
-    data: {
-      labels: years,
-      datasets: [
-        ...techDatasets,
-        { label: '★ Portfolio', data: portBal, borderColor: '#f5c400', backgroundColor: 'rgba(245,196,0,.06)', borderWidth: 2.5, pointRadius: 3, pointStyle: 'star', fill: false, tension: .3, spanGaps: true, borderDash: [6, 3] },
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12 } }, tooltip: { ...TT, callbacks: { label: c => `${c.dataset.label}: ${cur}${c.raw != null ? c.raw.toFixed(2) : '0'} M` } } },
-      scales: {
-        x: { grid: { color: '#182030' }, title: { display: true, text: 'Year', color: '#6b7d94' } },
-        y: { grid: { color: '#182030' }, ticks: { callback: v => `${cur}${v.toFixed(1)}M` }, min: 0, title: { display: true, text: `Debt Balance (${cur}M)`, color: '#6b7d94' } },
-      },
-    },
-  });
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'';
+  const maxLt=Math.max(...TECHS.map(n=>DATA.technologies[n].lifetime||20));
+  const years=Array.from({length:maxLt},(_,i)=>i+1);
+  const tDs=TECHS.filter(n=>DATA.technologies[n].debt>0).map(n=>{const ts=DATA.technologies[n].timeseries||{};return{label:n,data:(ts.debt_balance||[]).map(v=>v==null?null:v/1e6),borderColor:tc(n),backgroundColor:tc(n)+'22',borderWidth:2,pointRadius:2,fill:false,tension:.3,spanGaps:true};});
+  const pTs=PORT_KEY?DATA.technologies[PORT_KEY]?.timeseries||{}:{};
+  const pBal=(pTs.debt_balance||[]).map(v=>v==null?null:v/1e6);
+  mk('debtChart',{type:'line',data:{labels:years,datasets:[...tDs,{label:'★ Portfolio',data:pBal,borderColor:'#f5c400',backgroundColor:'rgba(245,196,0,.06)',borderWidth:2.5,pointRadius:3,pointStyle:'star',fill:false,tension:.3,spanGaps:true,borderDash:[6,3]}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}},tooltip:{...TT,callbacks:{label:c=>`${c.dataset.label}: ${cur}${c.raw!=null?c.raw.toFixed(2):'0'} M`}}},scales:{x:{grid:{color:'#182030'},title:{display:true,text:'Year',color:'#6b7d94'}},y:{grid:{color:'#182030'},ticks:{callback:v=>`${cur}${v.toFixed(1)}M`},min:0,title:{display:true,text:`Debt Balance (${cur}M)`,color:'#6b7d94'}}}}});
 }
 
-/* ─── DSCR Assessment ────────────────────────────────────────────────── */
-
+/* ─── DSCR Assessment — now includes Debt/EBITDA ────────────────────── */
 function renderDSCR() {
-  const dt   = PARAMS.dscr_target || 1.3;
-  const max  = 3;
-  const port = DATA.technologies[PORT_KEY];
-
-  // Avg DSCR: green ≥ target+0.2, amber ≥ target, red below
-  const avgDscrCls = avg => {
-    if (avg == null) return '';
-    if (avg >= dt + 0.2) return 'ok';
-    if (avg >= dt)       return 'warn';
-    return 'fail';
-  };
-
-  // Min DSCR: green ≥ target, amber within 0.15 below, red further
-  const minDscrCls = min => {
-    if (min == null) return '';
-    if (min >= dt)         return 'ok';
-    if (min >= dt - 0.15)  return 'warn';
-    return 'fail';
-  };
-
-  // Bar colour follows min DSCR status — guard against null min_dscr
-  const barCol = t => {
-    if (t.min_dscr != null && t.min_dscr >= dt)        return '#b8e836';
-    if (t.min_dscr != null && t.min_dscr >= dt - 0.15) return '#f5c400';
-    return '#f04f47';
-  };
-
-  const barsEl = $('dscr-bars');
-  if (barsEl) {
-    const techBars = TECHS.map(n => {
-      const t = DATA.technologies[n];
-      if (!t.avg_dscr) return '';
-      return `<div class="cf-row">
-        <div class="cf-name">${n}</div>
-        <div class="cf-bar-wrap">
-          <div class="cf-bar" style="width:${Math.min(t.avg_dscr / max * 100, 100)}%;background:${barCol(t)}">${t.avg_dscr.toFixed(2)}x avg</div>
-        </div>
-      </div>`;
-    }).join('');
-
-    const portBarCol = port?.min_dscr >= dt ? '#f5c400' : port?.min_dscr >= dt - 0.15 ? '#f5a500' : '#f04f47';
-    const portBar = port?.avg_dscr
-      ? `<div class="cf-row">
-          <div class="cf-name" style="color:var(--accent)">★ Portfolio</div>
-          <div class="cf-bar-wrap">
-            <div class="cf-bar" style="width:${Math.min(port.avg_dscr / max * 100, 100)}%;background:${portBarCol}">${port.avg_dscr.toFixed(2)}x avg</div>
-          </div>
-        </div>`
-      : '';
-
-    barsEl.innerHTML = techBars + portBar;
+  const dt=PARAMS.dscr_target||1.3, max=3;
+  const port=DATA.technologies[PORT_KEY];
+  const adCls=avg=>avg==null?'':avg>=dt+0.2?'ok':avg>=dt?'warn':'fail';
+  const mdCls=min=>min==null?'':min>=dt?'ok':min>=dt-0.15?'warn':'fail';
+  const barCol=t=>t.min_dscr!=null&&t.min_dscr>=dt?'#b8e836':t.min_dscr!=null&&t.min_dscr>=dt-0.15?'#f5c400':'#f04f47';
+  const barsEl=$('dscr-bars');
+  if(barsEl){
+    barsEl.innerHTML=TECHS.map(n=>{
+      const t=DATA.technologies[n]; if(!t.avg_dscr)return'';
+      return`<div class="cf-row"><div class="cf-name">${n}</div><div class="cf-bar-wrap"><div class="cf-bar" style="width:${Math.min(t.avg_dscr/max*100,100)}%;background:${barCol(t)}">${t.avg_dscr.toFixed(2)}x avg</div></div></div>`;
+    }).join('')+(port?.avg_dscr?`<div class="cf-row"><div class="cf-name" style="color:var(--accent)">★ Portfolio</div><div class="cf-bar-wrap"><div class="cf-bar" style="width:${Math.min(port.avg_dscr/max*100,100)}%;background:${barCol(port)}">${port.avg_dscr.toFixed(2)}x avg</div></div></div>`:'');
   }
-
-  const tbody = $('dscr-tbody');
-  if (tbody) {
-    tbody.innerHTML = [...TECHS, PORT_KEY]
-      .filter(n => n && DATA.technologies[n]?.avg_dscr != null)
-      .map(n => {
-        const t   = DATA.technologies[n];
-        const isP = n === PORT_KEY;
-        return `<tr style="${isP ? 'background:rgba(184,232,54,.04);font-weight:500' : ''}">
-          <td style="color:${isP ? 'var(--accent)' : 'var(--text)'}">${isP ? '★ Portfolio' : n}</td>
-          <td class="${avgDscrCls(t.avg_dscr)}">${X(t.avg_dscr)}</td>
-          <td class="${minDscrCls(t.min_dscr)}">${X(t.min_dscr)}</td>
-          <td style="color:var(--muted)">≥${dt.toFixed(2)}x</td>
-        </tr>`;
-      }).join('');
+  const tbody=$('dscr-tbody');
+  if(tbody){
+    tbody.innerHTML=[...TECHS,PORT_KEY].filter(n=>n&&DATA.technologies[n]?.avg_dscr!=null).map(n=>{
+      const t=DATA.technologies[n], isP=n===PORT_KEY;
+      const de=t.debt_ebitda_peak; const deCls=de==null?'':de<=5?'ok':de<=8?'warn':'fail';
+      const status=t.min_dscr==null?'—':t.min_dscr>=dt?'✓ Pass':t.min_dscr>=dt-0.15?'~ Watch':'✗ Fail';
+      return`<tr style="${isP?'background:rgba(184,232,54,.04);font-weight:500':''}">
+        <td style="color:${isP?'var(--accent)':'var(--text)'}">${isP?'★ Portfolio':n}</td>
+        <td class="${adCls(t.avg_dscr)}">${X(t.avg_dscr)}</td>
+        <td class="${mdCls(t.min_dscr)}">${X(t.min_dscr)}</td>
+        <td class="${deCls}">${de!=null?de.toFixed(1)+'x':'—'}</td>
+        <td class="${mdCls(t.min_dscr)}">${status}</td>
+      </tr>`;
+    }).join('');
   }
 }
 
 /* ─── Tornado ────────────────────────────────────────────────────────── */
-
 function renderTornado() {
-  const cur  = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const name = $('torn-tech').value;
-  const sv   = DATA.technologies[name]?.sensitivity;
-
-  if (!sv?.tornado) { mk('tornadoChart', { type: 'bar', data: { labels: [], datasets: [] } }); return; }
-
-  const map = {};
-  sv.tornado.forEach(r => {
-    if (!map[r.driver]) map[r.driver] = {};
-    map[r.driver][r.scenario] = r.delta / 1e3;
-  });
-
-  const D   = Object.keys(map);
-  const pos = D.map(d => map[d]['+20%'] || 0);
-  const neg = D.map(d => map[d]['-20%'] || 0);
-  const ord = D.map((d, i) => [i, Math.abs(pos[i]) + Math.abs(neg[i])]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
-
-  mk('tornadoChart', {
-    type: 'bar',
-    data: {
-      labels: ord.map(i => D[i]),
-      datasets: [
-        { label: '+20%', data: ord.map(i => pos[i]), backgroundColor: 'rgba(184,232,54,.55)', borderColor: '#b8e836', borderWidth: 1, borderRadius: 3 },
-        { label: '−20%', data: ord.map(i => neg[i]), backgroundColor: 'rgba(240,79,71,.5)',   borderColor: '#f04f47', borderWidth: 1, borderRadius: 3 },
-      ],
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12 } }, tooltip: { ...TT, callbacks: { label: c => ` ΔNPV: ${cur}${H(c.raw * 1e3, 1)}` } } },
-      scales: {
-        x: { grid: { color: '#182030' }, ticks: { callback: v => `${cur}${H(v * 1e3, 0)}` } },
-        y: { grid: { display: false } },
-      },
-    },
-  });
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'', name=$('torn-tech').value;
+  const sv=DATA.technologies[name]?.sensitivity;
+  if(!sv?.tornado){mk('tornadoChart',{type:'bar',data:{labels:[],datasets:[]}});return;}
+  const map={}; sv.tornado.forEach(r=>{if(!map[r.driver])map[r.driver]={};map[r.driver][r.scenario]=r.delta/1e3;});
+  const D=Object.keys(map), pos=D.map(d=>map[d]['+20%']||0), neg=D.map(d=>map[d]['-20%']||0);
+  const ord=D.map((d,i)=>[i,Math.abs(pos[i])+Math.abs(neg[i])]).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
+  mk('tornadoChart',{type:'bar',data:{labels:ord.map(i=>D[i]),datasets:[{label:'+20%',data:ord.map(i=>pos[i]),backgroundColor:'rgba(184,232,54,.55)',borderColor:'#b8e836',borderWidth:1,borderRadius:3},{label:'−20%',data:ord.map(i=>neg[i]),backgroundColor:'rgba(240,79,71,.5)',borderColor:'#f04f47',borderWidth:1,borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}},tooltip:{...TT,callbacks:{label:c=>` ΔNPV: ${cur}${H(c.raw*1e3,1)}`}}},scales:{x:{grid:{color:'#182030'},ticks:{callback:v=>`${cur}${H(v*1e3,0)}`}},y:{grid:{display:false}}}}});
 }
 
-/* ─── P50/P75/P90 Scenarios ──────────────────────────────────────────── */
-
+/* ─── Scenario ───────────────────────────────────────────────────────── */
 function renderScenario() {
-  const cur    = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const T      = TECHS.filter(n => DATA.technologies[n].sensitivity);
-  const portSv = PORT_KEY ? DATA.technologies[PORT_KEY]?.sensitivity : null;
-  const labels = [...T, ...(portSv ? ['★ Portfolio'] : [])];
-  const p50    = [...T.map(n => DATA.technologies[n].sensitivity.p50_npv / 1e3), ...(portSv ? [portSv.p50_npv / 1e3] : [])];
-  const p75    = [...T.map(n => DATA.technologies[n].sensitivity.p75_npv / 1e3), ...(portSv ? [portSv.p75_npv / 1e3] : [])];
-  const p90    = [...T.map(n => DATA.technologies[n].sensitivity.p90_npv / 1e3), ...(portSv ? [portSv.p90_npv / 1e3] : [])];
-
-  mk('scenarioChart', {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'P50 (base)', data: p50, backgroundColor: p50.map((_, i) => i === labels.length - 1 && portSv ? 'rgba(184,232,54,.9)' : 'rgba(184,232,54,.65)'), borderColor: '#b8e836', borderWidth: 1, borderRadius: 3 },
-        { label: 'P75 (−5%)', data: p75, backgroundColor: p75.map((_, i) => i === labels.length - 1 && portSv ? 'rgba(75,156,245,.8)'  : 'rgba(75,156,245,.55)'),  borderColor: '#4b9cf5', borderWidth: 1, borderRadius: 3 },
-        { label: 'P90 (−10%)', data: p90, backgroundColor: p90.map((_, i) => i === labels.length - 1 && portSv ? 'rgba(240,79,71,.75)' : 'rgba(240,79,71,.5)'),  borderColor: '#f04f47', borderWidth: 1, borderRadius: 3 },
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12 } }, tooltip: { ...TT, callbacks: { label: c => ` ${c.dataset.label}: ${cur}${H(c.raw * 1e3, 1)}` } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { maxRotation: 30 } },
-        y: { grid: { color: '#182030' }, ticks: { callback: v => `${cur}${H(v * 1e3, 0)}` }, title: { display: true, text: `NPV (${cur}k)`, color: '#6b7d94' } },
-      },
-    },
-  });
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'';
+  const T=TECHS.filter(n=>DATA.technologies[n].sensitivity), pSv=PORT_KEY?DATA.technologies[PORT_KEY]?.sensitivity:null;
+  const labels=[...T,...(pSv?['★ Portfolio']:[])];
+  const p50=[...T.map(n=>DATA.technologies[n].sensitivity.p50_npv/1e3),...(pSv?[pSv.p50_npv/1e3]:[])];
+  const p75=[...T.map(n=>DATA.technologies[n].sensitivity.p75_npv/1e3),...(pSv?[pSv.p75_npv/1e3]:[])];
+  const p90=[...T.map(n=>DATA.technologies[n].sensitivity.p90_npv/1e3),...(pSv?[pSv.p90_npv/1e3]:[])];
+  mk('scenarioChart',{type:'bar',data:{labels,datasets:[{label:'P50 (base)',data:p50,backgroundColor:p50.map((_,i)=>i===labels.length-1&&pSv?'rgba(184,232,54,.9)':'rgba(184,232,54,.65)'),borderColor:'#b8e836',borderWidth:1,borderRadius:3},{label:'P75 (−5%)',data:p75,backgroundColor:p75.map((_,i)=>i===labels.length-1&&pSv?'rgba(75,156,245,.8)':'rgba(75,156,245,.55)'),borderColor:'#4b9cf5',borderWidth:1,borderRadius:3},{label:'P90 (−10%)',data:p90,backgroundColor:p90.map((_,i)=>i===labels.length-1&&pSv?'rgba(240,79,71,.75)':'rgba(240,79,71,.5)'),borderColor:'#f04f47',borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}},tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${cur}${H(c.raw*1e3,1)}`}}},scales:{x:{grid:{display:false},ticks:{maxRotation:30}},y:{grid:{color:'#182030'},ticks:{callback:v=>`${cur}${H(v*1e3,0)}`},title:{display:true,text:`NPV (${cur}k)`,color:'#6b7d94'}}}}});
 }
 
 function renderScenarioInsights() {
-  const T = TECHS.filter(n => DATA.technologies[n].sensitivity);
-  if (!T.length) return;
-
-  let bestP90 = -Infinity, bestName = '', worstP90 = Infinity, worstName = '';
-  T.forEach(n => {
-    const v = DATA.technologies[n].sensitivity.p90_npv;
-    if (v > bestP90)  { bestP90  = v; bestName  = n; }
-    if (v < worstP90) { worstP90 = v; worstName = n; }
-  });
-
-  const drops   = T.map(n => { const sv = DATA.technologies[n].sensitivity; return sv.p50_npv > 0 ? (sv.p50_npv - sv.p90_npv) / sv.p50_npv * 100 : 0; });
-  const avgDrop = drops.reduce((a, b) => a + b, 0) / drops.length;
-  const portSv  = PORT_KEY ? DATA.technologies[PORT_KEY]?.sensitivity : null;
-  const portDrop = portSv && portSv.p50_npv > 0 ? ((portSv.p50_npv - portSv.p90_npv) / portSv.p50_npv * 100).toFixed(1) + '%' : '—';
-
-  const el = $('scenario-insights');
-  if (!el) return;
-  el.innerHTML = [
-    { n: H(bestP90, 1)  + '', l: 'Best P90 NPV — '  + bestName,  c: '' },
-    { n: H(worstP90, 1) + '', l: 'Worst P90 NPV — ' + worstName, c: worstP90 < 0 ? 'neg' : '' },
-    { n: avgDrop.toFixed(1) + '%', l: 'Per-technology avg P50→P90 erosion', c: 'warn' },
-    { n: portDrop, l: 'Portfolio P50→P90 downside', c: 'warn' },
-  ].map(i => `<div class="insight"><div class="insight-num ${i.c}">${i.n}</div><div class="insight-label">${i.l}</div></div>`).join('');
+  const T=TECHS.filter(n=>DATA.technologies[n].sensitivity); if(!T.length)return;
+  let bestP90=-Infinity,bestN='',worstP90=Infinity,worstN='';
+  T.forEach(n=>{const v=DATA.technologies[n].sensitivity.p90_npv;if(v>bestP90){bestP90=v;bestN=n;}if(v<worstP90){worstP90=v;worstN=n;}});
+  const drops=T.map(n=>{const sv=DATA.technologies[n].sensitivity;return sv.p50_npv>0?(sv.p50_npv-sv.p90_npv)/sv.p50_npv*100:0;});
+  const avgDrop=drops.reduce((a,b)=>a+b,0)/drops.length;
+  const pSv=PORT_KEY?DATA.technologies[PORT_KEY]?.sensitivity:null;
+  const pDrop=pSv&&pSv.p50_npv>0?((pSv.p50_npv-pSv.p90_npv)/pSv.p50_npv*100).toFixed(1)+'%':'—';
+  const el=$('scenario-insights'); if(!el)return;
+  el.innerHTML=[{n:H(bestP90,1)+'',l:'Best P90 NPV — '+bestN,c:''},{n:H(worstP90,1)+'',l:'Worst P90 NPV — '+worstN,c:worstP90<0?'neg':''},{n:avgDrop.toFixed(1)+'%',l:'Avg P50→P90 erosion',c:'warn'},{n:pDrop,l:'Portfolio P50→P90 downside',c:'warn'}].map(i=>`<div class="insight"><div class="insight-num ${i.c}">${i.n}</div><div class="insight-label">${i.l}</div></div>`).join('');
 }
 
 /* ─── Monte Carlo ────────────────────────────────────────────────────── */
-
 function renderMC() {
-  const cur  = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const name = $('mc-tech').value;
-  const sv   = DATA.technologies[name]?.sensitivity;
-
-  if (!sv) { mk('mcChart', { type: 'bar', data: { labels: [], datasets: [] } }); return; }
-
-  const p10  = sv.mc_p10 / 1e3;
-  const p50  = sv.mc_p50 / 1e3;
-  const p90  = sv.mc_p90 / 1e3;
-  const sig  = Math.max((p90 - p10) / 2.56, 1e-6);
-  const mu   = p50;
-  const bins = 50;
-  const xMin = mu - 3.5 * sig;
-  const xMax = mu + 3.5 * sig;
-  const step = (xMax - xMin) / bins;
-  const xs   = Array.from({ length: bins }, (_, i) => xMin + (i + .5) * step);
-  const ys   = xs.map(x => Math.exp(-.5 * ((x - mu) / sig) ** 2) / (sig * Math.sqrt(2 * Math.PI)));
-
-  mk('mcChart', {
-    type: 'bar',
-    data: {
-      labels: xs.map(x => x.toFixed(0)),
-      datasets: [
-        { label: 'Density', data: ys, backgroundColor: xs.map(x => x >= 0 ? 'rgba(184,232,54,.55)' : 'rgba(240,79,71,.5)'), borderColor: xs.map(x => x >= 0 ? '#b8e836' : '#f04f47'), borderWidth: 0, barPercentage: 1, categoryPercentage: 1 },
-        ...[[p10, `P10 ${cur}${H(p10 * 1e3, 1)}`, '#f04f47'], [p50, `P50 ${cur}${H(p50 * 1e3, 1)}`, '#f5c400'], [p90, `P90 ${cur}${H(p90 * 1e3, 1)}`, '#b8e836']].map(([val, lbl, col]) => ({
-          type: 'line', label: lbl,
-          data: xs.map((x, i) => Math.abs(x - val) < step * 1.5 ? ys[i] * 2.2 : null),
-          borderColor: col, borderWidth: 2, pointRadius: 0, fill: false, spanGaps: false, yAxisID: 'y',
-        })),
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, filter: i => i.datasetIndex > 0, font: { size: 9 } } },
-        tooltip: { ...TT, callbacks: { title: c => `NPV ≈ ${cur}${c[0].label}k`, label: c => c.datasetIndex === 0 ? `Density: ${(+c.raw).toFixed(4)}` : c.dataset.label } },
-      },
-      scales: {
-        x: { ticks: { maxTicksLimit: 8, callback: (v, i) => xs[i] ? `${cur}${xs[i].toFixed(0)}k` : '' }, grid: { display: false } },
-        y: { ticks: { display: false }, grid: { color: '#182030' }, title: { display: true, text: `P(NPV>0) = ${(sv.mc_prob_positive * 100).toFixed(0)}%`, color: '#6b7d94' } },
-      },
-    },
-  });
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'', name=$('mc-tech').value;
+  const sv=DATA.technologies[name]?.sensitivity;
+  if(!sv){mk('mcChart',{type:'bar',data:{labels:[],datasets:[]}});return;}
+  const p10=sv.mc_p10/1e3,p50=sv.mc_p50/1e3,p90=sv.mc_p90/1e3;
+  const sig=Math.max((p90-p10)/2.56,1e-6), mu=p50, bins=50;
+  const xMin=mu-3.5*sig, xMax=mu+3.5*sig, step=(xMax-xMin)/bins;
+  const xs=Array.from({length:bins},(_,i)=>xMin+(i+.5)*step);
+  const ys=xs.map(x=>Math.exp(-.5*((x-mu)/sig)**2)/(sig*Math.sqrt(2*Math.PI)));
+  mk('mcChart',{type:'bar',data:{labels:xs.map(x=>x.toFixed(0)),datasets:[{label:'Density',data:ys,backgroundColor:xs.map(x=>x>=0?'rgba(184,232,54,.55)':'rgba(240,79,71,.5)'),borderColor:xs.map(x=>x>=0?'#b8e836':'#f04f47'),borderWidth:0,barPercentage:1,categoryPercentage:1},...[[p10,`P10 ${cur}${H(p10*1e3,1)}`,'#f04f47'],[p50,`P50 ${cur}${H(p50*1e3,1)}`,'#f5c400'],[p90,`P90 ${cur}${H(p90*1e3,1)}`,'#b8e836']].map(([val,lbl,col])=>({type:'line',label:lbl,data:xs.map((x,i)=>Math.abs(x-val)<step*1.5?ys[i]*2.2:null),borderColor:col,borderWidth:2,pointRadius:0,fill:false,spanGaps:false,yAxisID:'y'}))]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12,filter:i=>i.datasetIndex>0,font:{size:9}}},tooltip:{...TT,callbacks:{title:c=>`NPV ≈ ${cur}${c[0].label}k`,label:c=>c.datasetIndex===0?`Density: ${(+c.raw).toFixed(4)}`:c.dataset.label}}},scales:{x:{ticks:{maxTicksLimit:8,callback:(v,i)=>xs[i]?`${cur}${xs[i].toFixed(0)}k`:''},grid:{display:false}},y:{ticks:{display:false},grid:{color:'#182030'},title:{display:true,text:`P(Positive NPV) = ${(sv.mc_prob_positive*100).toFixed(0)}% · density approx. from P10/P50/P90`,color:'#6b7d94'}}}}});
 }
 
 function renderMCTable() {
-  // P10 NPV: green ≥ 0 means even the 10th-percentile downside is positive — very strong.
-  //          Red if negative — lenders see P10 loss as a hard risk flag.
-  const p10Cls = v => v == null ? '' : v >= 0 ? 'ok' : 'fail';
-
-  // P50 NPV: the median outcome. Green ≥ 0, amber if small negative (erosion ≤ 15%
-  //          of the p90 absolute value used as scale), red if clearly negative.
-  const p50Cls = (v, p90) => {
-    if (v == null) return '';
-    if (v >= 0)    return 'ok';
-    const scale = Math.abs(p90 || v || 1);
-    if (Math.abs(v) <= 0.15 * scale) return 'warn';
-    return 'fail';
+  const p10Cls=v=>v==null?'':v>=0?'ok':'fail';
+  const p50Cls=(v,p90)=>{if(v==null)return'';if(v>=0)return'ok';const s=Math.abs(p90||v||1);return Math.abs(v)<=0.15*s?'warn':'fail';};
+  const p90Cls=(p90,p50)=>{if(p90==null)return'';if(p90>=0)return'ok';const e=p50!=null&&p50>0?(p50-p90)/p50:1;return e<=0.30?'warn':'fail';};
+  const probCls=p=>p==null?'':p>=.9?'ok':p>=.7?'warn':'fail';
+  const riskLbl=p=>p==null?'—':p>=.9?'<span class="ok">Low</span>':p>=.7?'<span class="warn">Moderate</span>':'<span class="fail">High</span>';
+  const makeRow=(n,isP)=>{
+    const sv=DATA.technologies[n]?.sensitivity; if(!sv)return'';
+    const p=sv.mc_prob_positive;
+    return`<tr style="${isP?'background:rgba(184,232,54,.04);font-weight:500':''}"><td style="color:${isP?'var(--accent)':'var(--text)'}">${isP?'★ Portfolio':n}</td><td class="${p10Cls(sv.mc_p10)}">${H(sv.mc_p10,1)}</td><td class="${p50Cls(sv.mc_p50,sv.mc_p90)}">${H(sv.mc_p50,1)}</td><td class="${p90Cls(sv.mc_p90,sv.mc_p50)}">${H(sv.mc_p90,1)}</td><td class="${probCls(p)}"><strong>${p!=null?(p*100).toFixed(1)+'%':'—'}</strong></td><td>${riskLbl(p)}</td></tr>`;
   };
-
-  // P90 NPV: the downside stress case (10% probability of being worse than this).
-  //          Green ≥ 0 — bankable even at stress. Amber if erosion vs P50 ≤ 30%.
-  //          Red if deep negative relative to P50.
-  const p90Cls = (p90, p50) => {
-    if (p90 == null) return '';
-    if (p90 >= 0)    return 'ok';
-    const erosion = p50 != null && p50 > 0 ? (p50 - p90) / p50 : 1;
-    if (erosion <= 0.30) return 'warn';
-    return 'fail';
-  };
-
-  // P(NPV>0): green ≥ 90% (low risk / bankable), amber ≥ 70% (moderate), red < 70% (high risk)
-  const probCls = p => {
-    if (p == null) return '';
-    if (p >= .9)   return 'ok';
-    if (p >= .7)   return 'warn';
-    return 'fail';
-  };
-
-  const riskLabel = p => {
-    if (p == null) return '—';
-    if (p >= .9)   return '<span class="ok">Low</span>';
-    if (p >= .7)   return '<span class="warn">Moderate</span>';
-    return '<span class="fail">High</span>';
-  };
-
-  const makeRow = (n, isPortfolio) => {
-    const sv = DATA.technologies[n]?.sensitivity;
-    if (!sv) return '';
-    const p = sv.mc_prob_positive;
-    return `<tr style="${isPortfolio ? 'background:rgba(184,232,54,.04);font-weight:500' : ''}">
-      <td style="color:${isPortfolio ? 'var(--accent)' : 'var(--text)'}">${isPortfolio ? '★ Portfolio' : n}</td>
-      <td class="${p10Cls(sv.mc_p10)}">${H(sv.mc_p10, 1)}</td>
-      <td class="${p50Cls(sv.mc_p50, sv.mc_p90)}">${H(sv.mc_p50, 1)}</td>
-      <td class="${p90Cls(sv.mc_p90, sv.mc_p50)}">${H(sv.mc_p90, 1)}</td>
-      <td class="${probCls(p)}"><strong>${p != null ? (p * 100).toFixed(1) + '%' : '—'}</strong></td>
-      <td>${riskLabel(p)}</td>
-    </tr>`;
-  };
-
-  const tbody = $('mc-tbody');
-  if (tbody) tbody.innerHTML = [
-    ...TECHS.map(n => makeRow(n, false)),
-    ...(PORT_KEY ? [makeRow(PORT_KEY, true)] : []),
-  ].join('');
+  const tbody=$('mc-tbody'); if(tbody)tbody.innerHTML=[...TECHS.map(n=>makeRow(n,false)),...(PORT_KEY?[makeRow(PORT_KEY,true)]:[])].join('');
 }
 
-/* ─── PPA vs LCOE ────────────────────────────────────────────────────── */
-
+/* ─── PPA vs LCOE + Break-even PPA ──────────────────────────────────── */
 function renderLCOE() {
-  const cur      = CURRENT_CURRENCY ? CURRENT_CURRENCY + ' ' : '';
-  const port     = PORT_KEY ? DATA.technologies[PORT_KEY] || {} : {};
-  const portLcoe = port.lcoe || null;
-  const portPpa  = port.ppa_price != null ? port.ppa_price : null;
-  const labels   = [...TECHS];
-  const lcoes    = TECHS.map(n => DATA.technologies[n].lcoe    || null);
-  const ppas     = TECHS.map(n => DATA.technologies[n].ppa_price || null);
+  const cur=CURRENT_CURRENCY?CURRENT_CURRENCY+' ':'';
+  const port=PORT_KEY?DATA.technologies[PORT_KEY]||{}:{};
+  const portLcoe=port.lcoe||null, portPpa=port.ppa_price||null, portBeppa=port.breakeven_ppa||null;
+  const labels=[...TECHS];
+  const lcoes=TECHS.map(n=>DATA.technologies[n].lcoe||null);
+  const ppas=TECHS.map(n=>DATA.technologies[n].ppa_price||null);
+  const beppas=TECHS.map(n=>DATA.technologies[n].breakeven_ppa||null);
+  mk('lcoeChart',{type:'bar',data:{labels,datasets:[
+    {label:'LCOE (cost floor)',data:lcoes,backgroundColor:TECHS.map(n=>`${tc(n)}cc`),borderColor:TECHS.map(n=>tc(n)),borderWidth:1.5,borderRadius:4,order:3},
+    {label:'PPA Price (contracted)',data:ppas,backgroundColor:TECHS.map(()=>'rgba(184,232,54,.18)'),borderColor:TECHS.map(()=>'rgba(184,232,54,.7)'),borderWidth:1.5,borderRadius:4,order:2},
+    {label:'Break-even PPA',data:beppas,type:'line',borderColor:'rgba(245,196,0,.85)',borderWidth:2,pointRadius:5,pointStyle:'triangle',fill:false,order:1},
+    ...(portLcoe?[{type:'line',label:'Portfolio LCOE',data:Array(TECHS.length).fill(portLcoe),borderColor:'#4b9cf5',borderWidth:1.5,borderDash:[8,4],pointRadius:0,fill:false,order:0}]:[]),
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:14}},tooltip:{...TT,callbacks:{label:c=>{if(c.datasetIndex>=2)return` ${c.dataset.label}: ${cur}${H(c.raw,0)}/MWh`;const n=TECHS[c.dataIndex],lcoe=DATA.technologies[n]?.lcoe,ppa=DATA.technologies[n]?.ppa_price;if(c.datasetIndex===0&&lcoe&&ppa)return` LCOE: ${cur}${H(lcoe,0)} | Margin: ${((ppa-lcoe)/lcoe*100).toFixed(1)}%`;return` PPA: ${cur}${H(c.raw,0)}/MWh`;}}}},scales:{x:{grid:{display:false},ticks:{maxRotation:20}},y:{grid:{color:'#182030'},ticks:{callback:v=>`${cur}${H(v,0)}`},title:{display:true,text:`Price (${cur}/MWh)`,color:'#6b7d94'}}}}});
 
-  mk('lcoeChart', {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'LCOE (cost floor)',      data: lcoes, backgroundColor: TECHS.map(n => `${tc(n)}cc`), borderColor: TECHS.map(n => tc(n)), borderWidth: 1.5, borderRadius: 4, order: 2 },
-        { label: 'PPA Price (contracted)', data: ppas,  backgroundColor: TECHS.map(() => 'rgba(184,232,54,.18)'), borderColor: TECHS.map(() => 'rgba(184,232,54,.7)'), borderWidth: 1.5, borderRadius: 4, order: 3 },
-        ...(portLcoe ? [{ type: 'line', label: 'Portfolio LCOE', data: Array(TECHS.length).fill(portLcoe), borderColor: '#f5c400', borderWidth: 2, borderDash: [8, 4], pointRadius: 0, fill: false, order: 1 }] : []),
-        ...(portPpa  ? [{ type: 'line', label: 'Portfolio PPA',  data: Array(TECHS.length).fill(portPpa),  borderColor: 'rgba(184,232,54,.7)', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, fill: false, order: 0 }] : []),
-      ],
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 14 } },
-        tooltip: { ...TT, callbacks: {
-          label: c => {
-            if (c.datasetIndex >= 2) return ` ${c.dataset.label}: ${cur}${H(c.raw, 0)} /MWh`;
-            const n    = TECHS[c.dataIndex];
-            const lcoe = DATA.technologies[n]?.lcoe;
-            const ppa  = DATA.technologies[n]?.ppa_price;
-            if (c.datasetIndex === 0 && lcoe && ppa) return ` LCOE: ${cur}${H(lcoe, 0)} | Margin: ${((ppa - lcoe) / lcoe * 100).toFixed(1)}%`;
-            return ` PPA: ${cur}${H(c.raw, 0)} /MWh`;
-          },
-        }},
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { maxRotation: 20 } },
-        y: { grid: { color: '#182030' }, ticks: { callback: v => `${cur}${H(v, 0)}` }, title: { display: true, text: `Price (${cur}/MWh)`, color: '#6b7d94' } },
-      },
-    },
-  });
+  const tbody=$('ppa-tbody');
+  if(tbody){tbody.innerHTML=[...TECHS,PORT_KEY].filter(n=>DATA.technologies[n]).map(n=>{
+    const t=DATA.technologies[n], isP=n===PORT_KEY;
+    const lcoe=t.lcoe, ppa=t.ppa_price, beppa=t.breakeven_ppa;
+    if(!lcoe||!ppa)return`<tr style="${isP?'background:rgba(184,232,54,.04)':''}"><td style="color:${isP?'var(--accent)':'var(--text)'}">${isP?'★ Portfolio':n}</td><td colspan="5" style="color:var(--muted);text-align:center">—</td></tr>`;
+    const margin=(ppa-lcoe)/lcoe*100, cover=ppa/lcoe;
+    const mCls=margin>=100?'ok':margin>=20?'warn':'fail';
+    const cCls=cover>=2?'ok':cover>=1.2?'warn':'fail';
+    const bCls=beppa!=null&&beppa<ppa?'ok':beppa!=null&&beppa<=ppa*1.1?'warn':'fail';
+    return`<tr style="${isP?'background:rgba(184,232,54,.04);font-weight:500':''}"><td style="color:${isP?'var(--accent)':'var(--text)'}">${isP?'★ Portfolio':n}</td><td style="color:var(--muted)">${cur}${H(lcoe,0)}</td><td class="${bCls}">${beppa!=null?cur+H(beppa,0):'—'}</td><td class="${ppa>lcoe?'ok':'fail'}">${cur}${H(ppa,0)}</td><td class="${mCls}">${margin>=0?'+':''}${margin.toFixed(1)}%</td><td class="${cCls}">${cover.toFixed(2)}x</td></tr>`;
+  }).join('');}
 
-  const tbody = $('ppa-tbody');
-  if (tbody) {
-    tbody.innerHTML = [...TECHS, PORT_KEY]
-      .filter(n => DATA.technologies[n])
-      .map(n => {
-        const t    = DATA.technologies[n];
-        const isP  = n === PORT_KEY;
-        const lcoe = t.lcoe;
-        const ppa  = t.ppa_price != null ? t.ppa_price : null;
-
-        if (!lcoe || !ppa) {
-          return `<tr style="${isP ? 'background:rgba(184,232,54,.04)' : ''}">
-            <td style="color:${isP ? 'var(--accent)' : 'var(--text)'}">${isP ? '★ Portfolio' : n}</td>
-            <td colspan="4" style="color:var(--muted);text-align:center">—</td>
-          </tr>`;
-        }
-
-        const margin = (ppa - lcoe) / lcoe * 100;
-        const cover  = ppa / lcoe;
-
-        // Margin: green ≥ 100%, amber ≥ 20%, red < 20% (or negative)
-        const marginCls = margin >= 100 ? 'ok' : margin >= 20 ? 'warn' : 'fail';
-
-        // Cover: green ≥ 2x (strong buffer), amber ≥ 1.2x (minimal positive), red < 1.2x
-        const coverCls = cover >= 2 ? 'ok' : cover >= 1.2 ? 'warn' : 'fail';
-
-        // PPA price itself: green if above LCOE, amber if equal, red if below
-        const ppaCls = ppa > lcoe ? 'ok' : ppa === lcoe ? 'warn' : 'fail';
-
-        return `<tr style="${isP ? 'background:rgba(184,232,54,.04);font-weight:500' : ''}">
-          <td style="color:${isP ? 'var(--accent)' : 'var(--text)'}">${isP ? '★ Portfolio' : n}</td>
-          <td style="color:var(--muted)">${cur}${H(lcoe, 0)}</td>
-          <td class="${ppaCls}">${cur}${H(ppa, 0)}</td>
-          <td class="${marginCls}">${margin >= 0 ? '+' : ''}${margin.toFixed(1)}%</td>
-          <td class="${coverCls}">${cover.toFixed(2)}x</td>
-        </tr>`;
-      }).join('');
+  const recEl=$('ppa-recommendation');
+  if(recEl&&portLcoe&&portPpa){
+    const spread=portPpa/portLcoe;
+    const weak=TECHS.map(n=>{const t=DATA.technologies[n];return t.lcoe&&t.ppa_price?{n,m:(t.ppa_price-t.lcoe)/t.lcoe}:{n,m:null};}).filter(x=>x.m!=null&&x.m<0.5).map(x=>x.n);
+    recEl.innerHTML=`<span style="color:var(--accent);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px">★ PPA Strategy Note</span><strong style="color:var(--text)">Portfolio PPA ${cur}${H(portPpa,0)}/MWh</strong> = <strong style="color:var(--accent)">${spread.toFixed(2)}x LCOE coverage</strong>. Break-even PPA: ${portBeppa?cur+H(portBeppa,0)+'/MWh':' N/A'}. ${weak.length?`<span style="color:#f5c400">Thin margin (&lt;50%): ${weak.join(', ')}.</span> `:''}`;
   }
 
-  const recEl = $('ppa-recommendation');
-  if (recEl && portLcoe && portPpa) {
-    const spread      = portPpa / portLcoe;
-    const techMargins = TECHS.map(n => { const t = DATA.technologies[n]; return t.lcoe && t.ppa_price ? { n, m: (t.ppa_price - t.lcoe) / t.lcoe } : { n, m: null }; }).filter(x => x.m != null);
-    const weak        = techMargins.filter(x => x.m < 0.5).map(x => x.n);
-    const strong      = techMargins.filter(x => x.m >= 3.0).map(x => x.n);
+  const T=TECHS.filter(n=>DATA.technologies[n].lcoe&&DATA.technologies[n].ppa_price);
+  if(!T.length)return;
+  let cheapest=T[0],priciest=T[0],bestSpread=T[0],worstSpread=T[0];
+  T.forEach(n=>{const t=DATA.technologies[n];if(t.lcoe<DATA.technologies[cheapest].lcoe)cheapest=n;if(t.lcoe>DATA.technologies[priciest].lcoe)priciest=n;const s=(t.ppa_price-t.lcoe)/t.lcoe;const sb=(DATA.technologies[bestSpread].ppa_price-DATA.technologies[bestSpread].lcoe)/DATA.technologies[bestSpread].lcoe;const sw=(DATA.technologies[worstSpread].ppa_price-DATA.technologies[worstSpread].lcoe)/DATA.technologies[worstSpread].lcoe;if(s>sb)bestSpread=n;if(s<sw)worstSpread=n;});
+  const pMv=portLcoe&&portPpa!=null?portPpa-portLcoe:null, pMp=pMv!=null&&portLcoe?(pMv/portLcoe*100).toFixed(1)+'%':null;
+  const iEl=$('lcoe-insights');
+  if(iEl){iEl.innerHTML=[{n:H(DATA.technologies[cheapest].lcoe,0)+'',l:'Lowest LCOE — '+cheapest,c:''},{n:H(DATA.technologies[priciest].lcoe,0)+'',l:'Highest LCOE — '+priciest,c:'warn'},{n:((DATA.technologies[bestSpread].ppa_price-DATA.technologies[bestSpread].lcoe)/DATA.technologies[bestSpread].lcoe*100).toFixed(1)+'%',l:'Best PPA margin — '+bestSpread,c:''},{n:pMp||'—',l:'Portfolio margin (standalone)',c:pMv!=null&&pMv<0?'neg':''}].map(i=>`<div class="insight"><div class="insight-num ${i.c}">${i.n}</div><div class="insight-label">${i.l}</div></div>`).join('');}
+}
 
-    recEl.innerHTML =
-      `<span style="color:var(--accent);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px">★ PPA Strategy Recommendation</span>` +
-      `<strong style="color:var(--text)">Wholesale portfolio PPA at ${cur}${H(portPpa, 0)}/MWh</strong> provides a <strong style="color:var(--accent)">${spread.toFixed(2)}x revenue cover</strong> over portfolio LCOE of ${cur}${H(portLcoe, 0)}/MWh. ` +
-      (strong.length ? `Technologies <strong>${strong.join(', ')}</strong> have exceptional margins (>300%) that could support bundling discounts. ` : '') +
-      (weak.length   ? `<span style="color:#f5c400">Watch: ${weak.join(', ')} have thin margins (&lt;50%) — evaluate individual technology PPA pricing or technology exclusion from wholesale bundle.</span> ` : '') +
-      `Selling as a <strong>combined wholesale energy system</strong> offers the client supply diversity and grid stability — justify a premium PPA price vs spot market.`;
-  }
+/* ─── CAPEX Stack ────────────────────────────────────────────────────── */
+function renderCapexStack(){} // kept for compatibility, not called in new layout
 
-  const T = TECHS.filter(n => DATA.technologies[n].lcoe && DATA.technologies[n].ppa_price);
-  if (!T.length) return;
 
-  let cheapest = T[0], priciest = T[0], bestSpread = T[0], worstSpread = T[0];
-  T.forEach(n => {
-    const t = DATA.technologies[n];
-    if (t.lcoe < DATA.technologies[cheapest].lcoe) cheapest = n;
-    if (t.lcoe > DATA.technologies[priciest].lcoe) priciest = n;
-    const s  = (t.ppa_price - t.lcoe) / t.lcoe;
-    const sb = (DATA.technologies[bestSpread].ppa_price  - DATA.technologies[bestSpread].lcoe)  / DATA.technologies[bestSpread].lcoe;
-    const sw = (DATA.technologies[worstSpread].ppa_price - DATA.technologies[worstSpread].lcoe) / DATA.technologies[worstSpread].lcoe;
-    if (s > sb) bestSpread  = n;
-    if (s < sw) worstSpread = n;
-  });
+/* ─── IC Decision Scorecard ──────────────────────────────────────────── */
+function renderScorecard() {
+  const p=DATA.technologies[PORT_KEY]||{};
+  const dt=PARAMS.dscr_target||1.3;
+  const ke=PARAMS.cost_of_equity||0, kd=PARAMS.cost_of_debt||0, dr=PARAMS.debt_ratio||0, tr=PARAMS.tax_rate||0;
+  const wc=((1-dr)*ke+dr*kd*(1-tr))||PARAMS.wacc||.08;
+  const portSv=p.sensitivity||{}, prob=typeof portSv.mc_prob_positive==='number'?portSv.mc_prob_positive:null;
 
-  const portMarginVal = (portLcoe && portPpa != null) ? portPpa - portLcoe : null;
-  const portMarginPct = portMarginVal != null && portLcoe ? (portMarginVal / portLcoe * 100).toFixed(1) + '%' : null;
+  const dims=[
+    {label:'Returns',
+     ok:p.irr!=null&&p.irr>wc&&(p.profitability_index||0)>0,
+     warn:p.irr!=null&&p.irr>=wc-0.02,
+     detail:p.irr!=null?`Eq. IRR ${P(p.irr,1)} · PI ${p.profitability_index!=null?p.profitability_index.toFixed(2):'—'}`:'IRR unavailable'},
+    {label:'Debt service',
+     ok:p.min_dscr!=null&&p.min_dscr>=dt&&p.llcr!=null&&p.llcr>=1.25,
+     warn:p.min_dscr!=null&&p.min_dscr>=dt-0.15&&p.llcr!=null&&p.llcr>=1.10,
+     detail:p.min_dscr!=null?`Min DSCR ${p.min_dscr.toFixed(2)}x · LLCR ${p.llcr!=null?p.llcr.toFixed(2)+'x':'—'}`:'DSCR unavailable'},
+    {label:'Risk',
+     ok:prob!=null&&prob>=0.9,
+     warn:prob!=null&&prob>=0.7,
+     detail:prob!=null?`P(NPV>0) = ${(prob*100).toFixed(0)}% · ${prob>=0.9?'Low risk':prob>=0.7?'Moderate':'High risk'}`:'MC unavailable'},
+    {label:'Pricing',
+     ok:p.ppa_price!=null&&p.lcoe!=null&&p.ppa_price>p.lcoe&&(p.llcr||0)>=1.1,
+     warn:p.ppa_price!=null&&p.lcoe!=null&&p.ppa_price>=p.lcoe,
+     detail:p.ppa_price!=null&&p.lcoe!=null?`PPA/LCOE ${(p.ppa_price/p.lcoe).toFixed(2)}x · BE-PPA ${p.breakeven_ppa!=null?H(p.breakeven_ppa,0):'—'}`:'PPA/LCOE unavailable'},
+    {label:'ESG',
+     ok:p.co2_avoided_lifetime!=null&&p.co2_avoided_lifetime>0,
+     warn:p.co2_avoided_lifetime!=null,
+     detail:p.co2_avoided_lifetime!=null?`${H(p.co2_avoided_lifetime,0)} tCO₂e lifetime · IPCC AR6 WG3`:'CO₂ data unavailable'},
+  ];
 
-  const insightsEl = $('lcoe-insights');
-  if (insightsEl) {
-    insightsEl.innerHTML = [
-      { n: H(DATA.technologies[cheapest].lcoe, 0) + '',                                                                           l: 'Lowest LCOE — ' + cheapest,     c: '' },
-      { n: H(DATA.technologies[priciest].lcoe, 0) + '',                                                                           l: 'Highest LCOE — ' + priciest,    c: 'warn' },
-      { n: ((DATA.technologies[bestSpread].ppa_price - DATA.technologies[bestSpread].lcoe) / DATA.technologies[bestSpread].lcoe * 100).toFixed(1) + '%', l: 'Best margin — ' + bestSpread, c: '' },
-      { n: portMarginPct || '—', l: 'Portfolio margin (standalone)', c: portMarginVal != null && portMarginVal < 0 ? 'neg' : '' },
-    ].map(i => `<div class="insight"><div class="insight-num ${i.c}">${i.n}</div><div class="insight-label">${i.l}</div></div>`).join('');
-  }
+  const el=$('scorecard-cells'); if(!el)return;
+  el.innerHTML=dims.map(d=>{
+    const status=d.ok?'pass':d.warn?'watch':'fail';
+    const bg=d.ok?'rgba(184,232,54,.12)':d.warn?'rgba(245,196,0,.1)':'rgba(248,81,73,.08)';
+    const bd=d.ok?'rgba(184,232,54,.3)':d.warn?'rgba(245,196,0,.3)':'rgba(248,81,73,.3)';
+    const dot=d.ok?'#c8f04e':d.warn?'#f5c400':'#f85149';
+    const lbl=d.ok?'Pass':d.warn?'Watch':'Fail';
+    return`<div style="flex:1;min-width:120px;background:${bg};border:1px solid ${bd};border-radius:6px;padding:8px 12px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+        <span style="width:7px;height:7px;border-radius:50%;background:${dot};flex-shrink:0"></span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text)">${d.label}</span>
+        <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:${dot}">${lbl}</span>
+      </div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.4">${d.detail}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ─── Navigation ─────────────────────────────────────────────────────── */
-
 function buildNav() {
-  const nav = $('section-nav');
-  if (!nav) return;
-
-  const sections = [
-    { id: 'sec-A', l: 'Valuation'   },
-    { id: 'sec-B', l: 'Returns'     },
-    { id: 'sec-C', l: 'Cashflow'    },
-    { id: 'sec-D', l: 'Debt & DSCR' },
-    { id: 'sec-E', l: 'Sensitivity' },
-    { id: 'sec-F', l: 'Monte Carlo' },
-    { id: 'sec-G', l: 'PPA Strategy'},
-    { id: 'sec-bank', l: 'Bankability' },
-  ];
-
-  nav.innerHTML = sections.map(s =>
-    `<div class="snav-dot" onclick="document.getElementById('${s.id}')?.scrollIntoView({behavior:'smooth',block:'start'})">
-      <span class="snav-tip">${s.l}</span>
-    </div>`
-  ).join('');
-
-  const dots    = nav.querySelectorAll('.snav-dot');
-  const targets = sections.map(s => $(s.id)).filter(Boolean);
-
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (en.isIntersecting) {
-        const i = targets.indexOf(en.target);
-        dots.forEach((d, j) => d.classList.toggle('active', i === j));
-      }
-    });
-  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
-
-  targets.forEach(t => obs.observe(t));
+  const nav=$('section-nav'); if(!nav)return;
+  const sections=[{id:'sec-A',l:'Valuation'},{id:'sec-B',l:'Returns'},{id:'sec-C',l:'Cashflow'},{id:'sec-D',l:'Debt'},{id:'sec-E',l:'Sensitivity'},{id:'sec-F',l:'Risk MC'},{id:'sec-G',l:'PPA'},{id:'sec-bank',l:'Bankability'}];
+  nav.innerHTML=sections.map(s=>`<div class="snav-dot" onclick="document.getElementById('${s.id}')?.scrollIntoView({behavior:'smooth',block:'start'})"><span class="snav-tip">${s.l}</span></div>`).join('');
+  const dots=nav.querySelectorAll('.snav-dot'), targets=sections.map(s=>$(s.id)).filter(Boolean);
+  const obs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(en.isIntersecting){const i=targets.indexOf(en.target);dots.forEach((d,j)=>d.classList.toggle('active',i===j));}});},{rootMargin:'-40% 0px -55% 0px',threshold:0});
+  targets.forEach(t=>obs.observe(t));
 }
-
-/* ─── Scroll Reveal ──────────────────────────────────────────────────── */
 
 function buildReveal() {
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (en.isIntersecting) {
-        en.target.classList.add('visible');
-        en.target.querySelectorAll('.panel, .panel-wide').forEach((c, i) => {
-          c.style.transitionDelay = (i * .08) + 's';
-          c.classList.add('visible');
-        });
-      }
-    });
-  }, { rootMargin: '-10% 0px -5% 0px', threshold: .01 });
-
-  document.querySelectorAll('.grid-2, .grid-full, .auto-insights').forEach(el => {
-    el.classList.add('reveal');
-    obs.observe(el);
-  });
+  const obs=new IntersectionObserver(entries=>{entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');en.target.querySelectorAll('.panel,.panel-wide').forEach((c,i)=>{c.style.transitionDelay=(i*.08)+'s';c.classList.add('visible');});}});},{rootMargin:'-10% 0px -5% 0px',threshold:.01});
+  document.querySelectorAll('.grid-2,.grid-full,.auto-insights').forEach(el=>{el.classList.add('reveal');obs.observe(el);});
 }
 
-/* ─── Keyboard Navigation ────────────────────────────────────────────── */
-
 function buildKbd() {
-  const sectionIds = ['sec-A', 'sec-B', 'sec-C', 'sec-D', 'sec-E', 'sec-F', 'sec-G', 'sec-bank'];
-  const hint       = $('kbd-hint');
-
-  setTimeout(() => {
-    if (hint) {
-      hint.classList.add('show');
-      setTimeout(() => hint.classList.remove('show'), 4000);
-    }
-  }, 2500);
-
-  document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-    const n = parseInt(e.key);
-    if (n >= 1 && n <= sectionIds.length) {
-      e.preventDefault();
-      $(sectionIds[n - 1])?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
+  const ids=['sec-A','sec-B','sec-C','sec-D','sec-E','sec-F','sec-G','sec-bank'];
+  const hint=$('kbd-hint');
+  setTimeout(()=>{if(hint){hint.classList.add('show');setTimeout(()=>hint.classList.remove('show'),4000);}},2500);
+  document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;const n=parseInt(e.key);if(n>=1&&n<=ids.length){e.preventDefault();$(ids[n-1])?.scrollIntoView({behavior:'smooth',block:'start'});}});
 }
 
 /* ─── Boot ───────────────────────────────────────────────────────────── */
+document.getElementById('scenario-select').addEventListener('change',e=>{
+  currentDataFile=e.target.value;
+  loadDashboardData(currentDataFile);
+});
 
 loadDashboardData(currentDataFile);
-
 </script>
 </body>
 </html>
