@@ -2326,7 +2326,7 @@ footer::before {
   <div class="e-tile">
     <div class="e-label" style="color:var(--color-pos);opacity:.9">LCOE</div>
     <div class="e-val-sm" id="ex-lcoe">—</div>
-    <div class="e-sub">Levelised cost of energy</div>
+    <div class="e-sub">Levelised cost of electricity</div>
   </div>
   <div class="e-tile">
     <div class="e-label" style="color:var(--color-pos);opacity:.9">PPA Margin of Safety</div>
@@ -3874,8 +3874,8 @@ function renderExecView() {
 }
 
 function renderExecTornado() {
-  const name = TECHS[0] || PORT_KEY;
-  const sv = DATA.technologies[name]?.sensitivity;
+  // Verdict (C-Suite) tab: always locked to portfolio — not per-technology
+  const sv = (PORT && PORT.sensitivity) || DATA.technologies[PORT_KEY]?.sensitivity;
   if (!sv?.tornado) return;
   const map = {};
   sv.tornado.forEach(r => { if (!map[r.driver]) map[r.driver] = {}; map[r.driver][r.scenario] = r.delta / 1e6; });
@@ -3906,8 +3906,8 @@ function renderExecTornado() {
 }
 
 function renderExecMC() {
-  const name = TECHS[0] || PORT_KEY;
-  const sv = DATA.technologies[name]?.sensitivity;
+  // Verdict (C-Suite) tab: always locked to portfolio — not per-technology
+  const sv = (PORT && PORT.sensitivity) || DATA.technologies[PORT_KEY]?.sensitivity;
   if (!sv) return;
   const p10 = sv.mc_p10 / 1e3, p50 = sv.mc_p50 / 1e3, p90 = sv.mc_p90 / 1e3;
   const sig = Math.max((p90 - p10) / 2.56, 1e-6), mu = p50, bins = 40;
