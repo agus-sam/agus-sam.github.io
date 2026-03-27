@@ -3319,12 +3319,12 @@
     "assets": [
       {
         "name": "Wind",
-        "latitude": -6.227251,
-        "longitude": 107.159271
+        "latitude": 52.52,
+        "longitude": 13.405
       }
     ],
-    "latitude": -6.227251,
-    "longitude": 107.159271,
+    "latitude": 52.52,
+    "longitude": 13.405,
     "name": "AI Data Center Z"
   },
   "portfolio_aggregated": {
