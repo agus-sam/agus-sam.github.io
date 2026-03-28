@@ -805,8 +805,8 @@ const MONTH_BREAKS = [744,1416,2160,2880,3624,4344,5088,5832,6552,7296,8016];
 const STACK_ORDER  = ['WTE','Biomass','Geothermal','Hydro','Biogas','Solar','Wind'];
 const STORAGE_ORDER = ['PHS','BESS','Hydrogen'];
 
-const FOSSIL_ORDER = ['Biodiesel','Natural Gas','Grid'];
-const FOSSIL       = new Set(['Biodiesel','Natural Gas','Grid']);
+const FOSSIL_ORDER = ['Biodiesel','Natural Gas','Grid','Biomethane'];
+const FOSSIL       = new Set(['Biodiesel','Natural Gas','Grid','Biomethane']);
 const VRE_SET      = new Set(['Solar','Wind']);
 const GC           = '#131a24';
 const TC           = '#7a8a9e';
@@ -828,7 +828,7 @@ const KNOWN_COLORS = {
   'Natural Gas': '#90A4AE',  // blue-grey                   (achromatic)
   Biodiesel:  '#D97706',
   Grid:       '#64748B',  // warm amber                   (~38°)
-  CCGT:       '#FFA726',  // vivid amber-orange          (~35°)
+  Biomethane:       '#FFA726',  // vivid amber-orange          (~35°)
   OCGT:       '#FFE57F',  // pale gold                   (~50°)
   LNG:        '#7E57C2',  // medium indigo-purple         (~265°)
   Diesel:     '#E53935',  // strong red                  (~2°)
@@ -1944,13 +1944,13 @@ y2:{type:'linear',position:'left',grid:{display:false},ticks:{display:false},sta
     // Typical lower heating values in MJ/kg (used only as fallback denominator)
     const LHV_MJ_KG = {
       'Natural Gas': 47.1, 'LNG': 48.6, 'CCGT': 47.1, 'OCGT': 47.1,
-      'Diesel': 42.5, 'HFO': 40.2, 'Oil': 42.0,
+      'Diesel': 42.5, 'HFO': 40.2, 'Oil': 42.0,'Biomethane': 47.1,
       'Biodiesel': 37.0, 'Biomass': 15.0, 'Biogas': 22.0, 'WTE': 10.0, 'Coal': 26.0,
     };
     // Typical heat rates MWh_th per MWh_e (used when no direct fuel data)
     const HEAT_RATE = {
       'Natural Gas': 2.2, 'LNG': 2.2, 'CCGT': 1.85, 'OCGT': 2.8,
-      'Diesel': 2.5, 'HFO': 2.4, 'Oil': 2.5,
+      'Diesel': 2.5, 'HFO': 2.4, 'Oil': 2.5,'Biomethane': 2.2,
       'Biodiesel': 2.5, 'Biomass': 3.2, 'Biogas': 2.8, 'WTE': 3.5, 'Coal': 2.8,
     };
 
@@ -2373,6 +2373,7 @@ y2:{type:'linear',position:'left',grid:{display:false},ticks:{display:false},sta
         Hydrogen:`<svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="#00E5FF" stroke-width="1.4" stroke-linecap="round"><rect x="6" y="8" width="28" height="28" rx="1"/><line x1="6" y1="24" x2="34" y2="24"/><line x1="13" y1="13" x2="13" y2="21"/><line x1="19" y1="13" x2="19" y2="21"/><line x1="13" y1="17" x2="19" y2="17"/><line x1="25" y1="27" x2="25" y2="35"/><line x1="23" y1="29" x2="27" y2="29"/><line x1="23" y1="33" x2="27" y2="33"/><line x1="23" y1="31" x2="27" y2="31"/></svg>`,
         Grid:`<svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="#64748B" stroke-width="1.4" stroke-linecap="round"><circle cx="16" cy="17" r="7"/><circle cx="24" cy="23" r="7"/><line x1="16" y1="4" x2="16" y2="10"/><line x1="24" y1="30" x2="24" y2="36"/><line x1="12" y1="4" x2="20" y2="4"/><line x1="20" y1="36" x2="28" y2="36"/></svg>`,
         'Natural Gas':`<svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="#90A4AE" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="22" r="10"/><line x1="20" y1="4" x2="20" y2="12"/><line x1="20" y1="32" x2="20" y2="38"/><line x1="14" y1="16" x2="26" y2="28"/><line x1="26" y1="16" x2="14" y2="28"/><circle cx="20" cy="22" r="3"/></svg>`,
+        Biomethane:`<svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="#90A4AE" stroke-width="1.4" stroke-linecap="round"><circle cx="20" cy="22" r="10"/><line x1="20" y1="4" x2="20" y2="12"/><line x1="20" y1="32" x2="20" y2="38"/><line x1="14" y1="16" x2="26" y2="28"/><line x1="26" y1="16" x2="14" y2="28"/><circle cx="20" cy="22" r="3"/></svg>`,
         Biodiesel:`<svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="#D97706" stroke-width="1.4" stroke-linecap="round"><rect x="8" y="14" width="14" height="18" rx="1"/><rect x="10" y="10" width="10" height="4" rx="0.5"/><line x1="22" y1="20" x2="32" y2="16"/><line x1="22" y1="26" x2="32" y2="30"/><circle cx="34" cy="23" r="4"/><line x1="15" y1="18" x2="15" y2="28"/><line x1="18" y1="18" x2="18" y2="28"/></svg>`,
         Diesel:`<svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="#E53935" stroke-width="1.4" stroke-linecap="round"><rect x="8" y="14" width="14" height="18" rx="1"/><rect x="10" y="10" width="10" height="4" rx="0.5"/><line x1="22" y1="20" x2="32" y2="16"/><line x1="22" y1="26" x2="32" y2="30"/><circle cx="34" cy="23" r="4"/><line x1="15" y1="18" x2="15" y2="28"/><line x1="18" y1="18" x2="18" y2="28"/></svg>`,
       };
